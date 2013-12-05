@@ -1,6 +1,6 @@
 Run::Application.routes.draw do
-  get "about" => "static_pages#about", as: :about
-  root 'static_pages#about'
+  match "/about", to: "static_pages#about", as: :about, via: 'get'
+  root 'static_pages#home'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
