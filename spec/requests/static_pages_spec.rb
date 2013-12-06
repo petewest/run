@@ -9,6 +9,7 @@ describe "Static pages" do
 
     it {should have_title('Run') }
     it {should have_content('Run') }
+    it {should have_link('About', href: about_path) }
   end
   
   describe "About page" do
