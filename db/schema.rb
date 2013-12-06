@@ -11,13 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131206202623) do
+ActiveRecord::Schema.define(version: 20131206215353) do
 
   create_table "users", force: true do |t|
     t.string   "name"
     t.string   "email"
     t.string   "gravatar_email"
-    t.boolean  "admin"
+    t.boolean  "admin",           default: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "password_digest"
