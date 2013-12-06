@@ -1,6 +1,11 @@
 Run::Application.routes.draw do
   match "/about", to: "static_pages#about", as: :about, via: 'get'
   root 'static_pages#home'
+
+  # Test having category routes available:
+  # this should probably be the last route?
+  # get '/:category', to: 'runs#index'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
