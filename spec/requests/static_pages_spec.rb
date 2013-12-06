@@ -10,6 +10,7 @@ describe "Static pages" do
     it {should have_title('Run') }
     it {should have_content('Run') }
     it {should have_link('About', href: about_path) }
+    it {should have_link('', href: root_url) }
   end
   
   describe "About page" do
@@ -19,5 +20,6 @@ describe "Static pages" do
     
     it { should have_title('About')}
     it { should have_content('About') }
+    it {should have_link('', href: root_url) }
   end
 end
