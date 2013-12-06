@@ -1,7 +1,7 @@
 Run::Application.routes.draw do
   match "/about", to: "static_pages#about", as: :about, via: 'get'
   match "/signup", to: 'users#new', via: 'get'
-  resources :users, only: :new
+  resources :users
   root 'static_pages#home'
 
   # Test having category routes available:

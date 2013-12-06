@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe User do
-  before { @user = User.new(name: "Example User", email: "user@example.com",password: "foobar", password_confirmation: "foobar") }
+  before do
+    @user = User.new(name: "Example User", email: "user@example.com",gravatar_email: "user@example.com",password: "foobar", password_confirmation: "foobar")
+  end
 
   subject { @user }
 
@@ -10,6 +12,7 @@ describe User do
   it { should respond_to(:password_digest) }
   it { should respond_to(:password) }
   it { should respond_to(:password_confirmation) }
+  it { should respond_to(:gravatar_email) }
   it { should respond_to(:authenticate)}
   it { should be_valid }
 
@@ -21,6 +24,12 @@ describe User do
     before { @user.email = " " }
     it { should_not be_valid }
   end
+  
+  describe "when gravatar email is not present" do
+    before { @user.gravatar_email = " " }
+    it { should_not be_valid }
+  end
+  
 
   describe "when name is too long" do
     before { @user.name = "a" * 51 }
@@ -44,8 +53,9 @@ describe User do
         @user.email = valid_address
         expect(@user).to be_valid
       end
-    end
+    end    
   end
+  
   describe "when email address is already taken" do
     before do
       user_with_same_email = @user.dup
@@ -58,7 +68,7 @@ describe User do
   
   describe "when password is not present" do
     before do
-      @user = User.new(name: "Example User", email: "user@example.com",
+      @user = User.new(name: "Example User", email: "user@example.com", gravatar_email: "user@example.com",
       password: " ", password_confirmation: " ")
     end
     it { should_not be_valid }
@@ -88,6 +98,5 @@ describe User do
     before { @user.password = @user.password_confirmation = "a" * 5 }
     it { should be_invalid }
   end
-
 
 end
