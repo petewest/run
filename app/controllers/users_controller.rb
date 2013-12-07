@@ -11,8 +11,15 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      sign_in @user
-      flash[:success]="Welcome to the site, #{@user.name}!"
+      #This (might) handle creating users as admin without logging the admin out?
+      #it seems to! although we need some more logic to make the screens make sense
+      if signed_in?
+        flash[:success]="New user (#{@user.name}) created by #{current_user.name}"
+      else
+        sign_in @user
+        flash[:success]="Welcome to the site, #{@user.name}!"
+      end
+        
       redirect_to @user
     else
       render 'new'
