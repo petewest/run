@@ -24,7 +24,7 @@ module SessionsHelper
   #change default getter to lookup based on either session variable or cookie
   def current_user
     if (!session[:user_id].nil?)
-      @current_user||=Users.find(session[:user_id])
+      @current_user||=User.find(session[:user_id])
     else
       @current_user||=User.find_by(remember_token: User.encrypt(cookies[:remember_token]))
     end
