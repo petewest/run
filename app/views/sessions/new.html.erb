@@ -13,6 +13,9 @@
 
 			<%= f.label :password %>
 			<%= f.password_field :password %>
+			
+			<%= f.check_box :remember %>
+			<%= f.label :remember %>
 
 			<%= f.submit "Sign in", class: "btn btn-large btn-primary" %>
 		<% end %>
