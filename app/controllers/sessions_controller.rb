@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
     if (user && user.authenticate(params[:session][:password]))
       flash[:success]="Welcome back #{user.name}"
       sign_in(user, (params[:session][:remember].to_i==1))
-      redirect_to user
+      redirect_back_or user
     else
       flash.now[:error]="Authentication failed, please check username and password"
       render 'new'

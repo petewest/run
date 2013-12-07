@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   validates :gravatar_email, presence: true, format: { with: VALID_EMAIL_REGEX }
     
   has_secure_password
-  validates :password, length: { minimum: 6 }
+  validates :password, length: { minimum: 6 }, if: :check_password?
 
 
   def User.new_remember_token
@@ -32,5 +32,11 @@ class User < ActiveRecord::Base
   private
   def create_remember_token
     self.remember_token = User.encrypt(User.new_remember_token)
+  end
+  def check_password?
+    #Basic check here for now
+    #Only validate password for new user to allow edits without requiring password
+    #TODO think of a better solution that'll allow password changes
+    self.new_record?
   end
 end
