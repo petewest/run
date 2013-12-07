@@ -36,6 +36,10 @@ module SessionsHelper
     user==current_user
   end
   
+  def is_admin?
+    signed_in? && current_user.admin?
+  end
+  
   #Sign out
   def sign_out
     #Replace the remember_token (we'll change this later to delete the session item)

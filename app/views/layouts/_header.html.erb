@@ -9,7 +9,7 @@
 					<% if signed_in? %>
 					<li><%= link_to "Users", '#' %></li>
 					<li><%= link_to "Runs", '#' %></li>
-					<% if current_user.admin? %>
+					<% if is_admin? %>
 					<li id="fat-menu" class="dropdown">
 						<a href='#' class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b>
 						</a>
