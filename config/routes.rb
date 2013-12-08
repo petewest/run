@@ -13,7 +13,7 @@ Run::Application.routes.draw do
 
   # Test having category routes available:
   # this should probably be the last route?
-  get '/:category', to: 'posts#index', as: :category
+  #get '/:category', to: 'posts#index', as: :category
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
