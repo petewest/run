@@ -1,4 +1,5 @@
 class SessionsController < ApplicationController
+  before_action :signed_in_user, only: [:index, :destroy]
   
   def new
     @user=User.new
@@ -19,5 +20,9 @@ class SessionsController < ApplicationController
   def destroy
     sign_out
     redirect_to root_url
+  end
+  
+  def index
+    @sessions=current_user.sessions.paginate(page: params[:page])
   end
 end

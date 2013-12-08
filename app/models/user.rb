@@ -26,5 +26,5 @@ class User < ActiveRecord::Base
     self.new_record?
   end
   
-  has_many :sessions
+  has_many :sessions, dependent: :destroy
 end

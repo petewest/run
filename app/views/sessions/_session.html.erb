@@ -1,0 +1,5 @@
+<li>
+	ip: <%= session.ip_addr %> | last activity: <%= time_ago_in_words(session.updated_at) %>
+<% if current_session?(session)%>
+ | Is current session
+<% end %>
