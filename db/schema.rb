@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131207161211) do
+ActiveRecord::Schema.define(version: 20131208120129) do
+
+  create_table "sessions", force: true do |t|
+    t.string   "ip_addr"
+    t.boolean  "permanent"
+    t.string   "remember_token"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["user_id", "remember_token"], name: "index_sessions_on_user_id_and_remember_token"
 
   create_table "users", force: true do |t|
     t.string   "name"
@@ -21,10 +32,8 @@ ActiveRecord::Schema.define(version: 20131207161211) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "password_digest"
-    t.string   "remember_token"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["remember_token"], name: "index_users_on_remember_token"
 
 end

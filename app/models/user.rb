@@ -8,10 +8,7 @@ class User < ActiveRecord::Base
   #as the email.downcase! doesn't run until before_save we'd
   #end up copying it in anycase form, so we'll downcase it too
   before_save { gravatar_email.downcase! }
-  
-  #make sure we've got a remember token on create
-  before_create :create_remember_token
-  
+    
   validates :name, presence: true, length: {maximum: 50}
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
@@ -21,22 +18,13 @@ class User < ActiveRecord::Base
   validates :password, length: { minimum: 6 }, if: :check_password?
 
 
-  def User.new_remember_token
-    SecureRandom.urlsafe_base64
-  end
-
-  def User.encrypt(token)
-    Digest::SHA1.hexdigest(token.to_s)
-  end
-  
   private
-  def create_remember_token
-    self.remember_token = User.encrypt(User.new_remember_token)
-  end
   def check_password?
     #Basic check here for now
     #Only validate password for new user to allow edits without requiring password
     #TODO think of a better solution that'll allow password changes
     self.new_record?
   end
+  
+  has_many :sessions
 end

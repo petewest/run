@@ -3,11 +3,14 @@ module SessionsHelper
     #hybrid auth section, will store user id in a session variable and a remmeber token in the db if the user ticked "remember"
     #this way we can use the session variable if it's there, or populate from the db if not
     #to give us a way to have persistent and semi-persistent sessions
-    remember_token = User.new_remember_token
-    user.update_attribute(:remember_token, User.encrypt(remember_token))
+    remember_token = Session.new_remember_token
+    #Create a new session for this user
+    this_session=user.sessions.build(ip_addr: request.remote_ip.to_s, permanent: remember_forever,
+      remember_token: Session.encrypt(remember_token))
+    return nil unless this_session.save
     if remember_forever
       #If we're to remember this user forever then store the permanent token in a cookie
-      cookies.permanent[:remember_token] = remember_token      
+      cookies.permanent[:remember_token] = remember_token
     else
       #Otherwise we'll just store it for this session
       session[:remember_token]=remember_token
@@ -25,15 +28,32 @@ module SessionsHelper
   
   #change default getter to lookup based on either session variable or cookie
   def current_user
-    if (session[:remember_token])
-      @current_user||=User.find_by(remember_token: User.encrypt(session[:remember_token]))
-    elsif (cookies[:remember_token])
-      @current_user||=User.find_by(remember_token: User.encrypt(cookies[:remember_token]))
+    @current_session||=current_session
+    if (@current_session.nil?)
+      @current_user=nil
+    else
+      @current_user||=@current_session.user
     end
   end
   
   def current_user?(user)
     user==current_user
+  end
+
+  def current_session
+    if (session[:remember_token])
+      @current_session||=Session.find_by(remember_token: Session.encrypt(session[:remember_token]))
+    elsif (cookies[:remember_token])
+      @current_session||=Session.find_by(remember_token: Session.encrypt(cookies[:remember_token]))
+    end
+  end
+
+  def current_session=(new_session)
+    @current_session=new_session
+  end
+  
+  def current_session?(session_check)
+    session_check==current_session
   end
   
   def is_admin?
@@ -42,11 +62,10 @@ module SessionsHelper
   
   #Sign out
   def sign_out
-    #Replace the remember_token (we'll change this later to delete the session item)
-    #Just incase someone does a nasty and restores any cookies
+    #Remove this session
     if signed_in?
-      remember_token = User.new_remember_token
-      self.current_user.update_attribute(:remember_token, User.encrypt(remember_token))
+      @current_session.destroy
+      self.current_session=nil
     end
     #Remove current_user
     self.current_user=nil
