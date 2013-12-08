@@ -28,6 +28,8 @@ class UsersController < ApplicationController
   end
   
   def edit
+    #Nothing needs to happen here because it's already getting the user id 
+    #from signed_in_user
   end
   
   def index
@@ -65,8 +67,5 @@ class UsersController < ApplicationController
   def correct_user_or_admin
     @user = User.find(params[:id])
     redirect_to(root_url) unless (is_admin? || current_user?(@user))
-  end
-  def admin_user
-    redirect_to(root_url) unless is_admin?
   end
 end

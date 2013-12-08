@@ -3,7 +3,7 @@ Run::Application.routes.draw do
   match "/signup", to: 'users#new', via: 'get'
   match "/signin", to: 'sessions#new', via: 'get'
   match "/signout", to: 'sessions#destroy', via: 'delete'
-  resource :categories
+  resources :categories
   resources :users do
     resources :sessions, only: [:index, :destroy]
   end

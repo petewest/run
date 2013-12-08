@@ -1,2 +1,13 @@
-<h1>Categories#new</h1>
-<p>Find me in app/views/categories/new.html.erb</p>
+<% provide(:title,'New category')%>
+
+
+<div class="row">
+	<div class="span6 offset3">
+		<%= form_for(@category) do |f| %>
+
+			<%= render 'fields', f: f %>
+
+			<%= f.submit "Create category", class: "btn btn-large btn-primary" %>
+		<% end %>
+	</div>
+</div>

@@ -58,6 +58,12 @@ describe "Authentication" do
           end
         end
       end
+      describe "in the Categories controller" do
+        describe "visiting index page" do
+          before { get categories_path }
+          specify { expect(response).to redirect_to(root_url) }
+        end
+      end
       describe "in the Users controller" do
 
         describe "visiting the edit page" do
@@ -100,6 +106,26 @@ describe "Authentication" do
       describe "submitting a DELETE request to the Users#destroy action" do
         before { delete user_path(user) }
         specify { expect(response).to redirect_to(root_url) }
+      end
+    end
+    describe "Categories controller" do
+      let(:user) {FactoryGirl.create(:user)}
+      let(:admin) {FactoryGirl.create(:admin)}
+      describe "after signing in" do
+        describe "as normal user" do
+          before do
+            sign_in user, no_capybara: true
+            get categories_path
+          end
+          specify { expect(response).to redirect_to(root_url) }
+        end
+        describe "as admin user" do
+          before do
+            sign_in admin
+            visit categories_path
+          end
+          it {should have_title('Categories')}
+        end
       end
     end
   end
