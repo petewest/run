@@ -1,0 +1,15 @@
+<!--
+<ul class="user_admin_links">
+	<li><%= link_to 'Edit profile', edit_user_path(user) %></li>
+	<li>
+	<%= 
+	# link_to 'delete', user, method: :delete, data: {confirm: "Are you sure?"}
+	%>
+	</li>
+</ul>
+-->
+
+| <%= link_to 'edit', edit_user_path(user) %>
+<% unless current_user?(user)%>
+| <%= link_to 'delete', user, method: :delete, data: {confirm: "Are you sure?"} %>
+<% end %>
