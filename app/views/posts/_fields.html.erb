@@ -1,0 +1,23 @@
+<%= render 'shared/error_messages', object: f.object %>
+
+<%= f.label :title %>
+<%= f.text_field :title %>
+
+<div class="form-group">
+<%= f.label :embed_code %>
+<%= f.text_field :embed_code %>
+<p class="help-block">Use the "share" or "embed link" options from your tracking site to show a map with your post</p>
+</div>
+
+<%= f.label :at %>
+<%= f.datetime_field :at %>
+
+<%= f.label :category_id %>
+<%= f.collection_select :category_id, Category.all, :id, :name %>
+
+<div class="form-group">
+<%= f.label :write_up %>
+<%= f.text_area :write_up, rows: "20" %>
+<p class="help-block">You can use <a href="http://redcloth.org/textile">Textile</a> formatting above to make your post pretty</p>
+</div>
+
