@@ -10,4 +10,9 @@ FactoryGirl.define do
       admin true
     end
   end
+  factory :category do
+    name "Race"
+    stub "race"
+    sort_order 0
+  end
 end
