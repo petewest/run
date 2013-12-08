@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
   before_action :admin_user
-  before_action :get_category_from_params, only: [:show, :edit, :update]
+  before_action :get_category_from_params, only: [:show, :edit, :update, :destroy]
   def new
     @category = Category.new
   end
@@ -36,6 +36,13 @@ class CategoriesController < ApplicationController
       flash.now[:error]="Update failed"
       render 'edit'
     end
+  end
+  
+  def destroy
+    #before_action makes sure we've got a category
+    @category.destroy
+    flash[:success]="Category deleted"
+    redirect_to categories_path
   end
   
   private
