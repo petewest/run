@@ -32,7 +32,7 @@ module SessionsHelper
     if (@current_session.nil?)
       @current_user=nil
     else
-      @current_user||=@current_session.user
+      @current_user||=current_session.user
     end
   end
   
@@ -43,9 +43,14 @@ module SessionsHelper
   def current_session
     if (session[:remember_token])
       @current_session||=Session.find_by(remember_token: Session.encrypt(session[:remember_token]))
+      #In case the login session has been cleared from another login, we'll remove the token
+      #from the session if we're still nil at this point
+      session.delete(:remember_token) if @current_session.nil?
     elsif (cookies[:remember_token])
       @current_session||=Session.find_by(remember_token: Session.encrypt(cookies[:remember_token]))
+      cookies.delete(:remember_token) if @current_session.nil?
     end
+    @current_session
   end
 
   def current_session=(new_session)
@@ -62,11 +67,8 @@ module SessionsHelper
   
   #Sign out
   def sign_out
-    #Remove this session
-    if signed_in?
-      @current_session.destroy
-      self.current_session=nil
-    end
+    current_session.destroy
+    self.current_session=nil
     #Remove current_user
     self.current_user=nil
     #Tidy up any session vars or cookies
