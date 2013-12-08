@@ -15,4 +15,11 @@ FactoryGirl.define do
     stub "race"
     sort_order 0
   end
+  factory :post do
+    title "Race day!"
+    at "2013-12-01 09:00"
+    write_up "Write up goes here! Exciting!"
+    user
+    category
+  end
 end

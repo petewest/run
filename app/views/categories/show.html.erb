@@ -1,12 +1,17 @@
 <% provide(:title, @category.name)%>
 <h1><%= @category.name %></h1>
 
-<ul class="category-detail">
-<li>Name: <%= @category.name %></li>
-<li>Stub: <%= @category.stub %></li>
-<li>Sort order:<%= @category.sort_order %></li>
-</ul>
-<% if is_admin? %>
+<div class="row">
+	<div class="span6 offset3">
+		<%= form_for(@category) do |f| %>
+		<fieldset disabled>
+
+			<%= render 'fields', f: f %>
+		</fieldset>
+
+		<% end %>
+	</div>
+</div><% if is_admin? %>
 <%= link_to "Edit", edit_category_path(@category) %> | <%= link_to "Delete", @category, method: :delete, data: {confirm: "This will delete the category and all posts, are you sure?"} %>
 <% end %>
 <br>

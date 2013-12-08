@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131208181853) do
+ActiveRecord::Schema.define(version: 20131208213734) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
@@ -22,6 +22,20 @@ ActiveRecord::Schema.define(version: 20131208181853) do
   end
 
   add_index "categories", ["stub", "sort_order"], name: "index_categories_on_stub_and_sort_order", unique: true
+
+  create_table "posts", force: true do |t|
+    t.string   "title"
+    t.string   "embed_code"
+    t.datetime "at"
+    t.text     "write_up"
+    t.integer  "user_id"
+    t.integer  "category_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "posts", ["category_id"], name: "index_posts_on_category_id"
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id"
 
   create_table "sessions", force: true do |t|
     t.string   "ip_addr"

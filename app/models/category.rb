@@ -6,4 +6,6 @@ class Category < ActiveRecord::Base
   
   #set the default sort order 
   default_scope -> { order('sort_order ASC')}
+  
+  has_many :posts, dependent: :destroy
 end
