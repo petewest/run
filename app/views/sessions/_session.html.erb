@@ -3,3 +3,5 @@
 <% if current_session?(session)%>
  | Is current session
 <% end %>
+<%= link_to 'delete', session, method: :delete, data: {confirm: "Are you sure?"} %>
+</li>

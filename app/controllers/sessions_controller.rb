@@ -18,8 +18,25 @@ class SessionsController < ApplicationController
   end
   
   def destroy
-    sign_out
-    redirect_to root_url
+    #allow them to delete other sessions if they want to
+    if params[:id]
+      #retrieve the session info
+      session=Session.find(params[:id])
+      user=session.user
+      #if the user is an admin, or if the current owner of the session
+      if (session && (is_admin? || current_user?(user)))
+        #delete it
+        session.destroy
+        #Tell the user it's gone
+        flash[:success]="Session logged off"
+        #and redirect.  If it's the current session they'll get redirected to signin :)
+        redirect_to user_sessions_path(user)
+      end
+    else
+      #otherwise just sign out the current session
+      sign_out
+      redirect_to root_url
+    end
   end
   
   def index
