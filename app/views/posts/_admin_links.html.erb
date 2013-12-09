@@ -1,0 +1,20 @@
+<div class="post_admin_right">
+	<div class="btn-group">
+		<button type="button" class="btn btn-default dropdown-toggle post_admin" data-toggle="dropdown">
+			Post admin<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu post_admin">
+			<li>
+				<%= link_to(post, method: :delete, data:
+				{confirm: "This will delete the category and all posts, are you sure?"}) do %>
+				<span class="icon icon-remove"></span>Remove
+				<% end %>
+			</li>
+			<li>
+				<%= link_to(edit_post_path(post)) do %>
+				<span class="icon icon-pencil"></span>Edit
+				<% end %>
+			</li>
+		</ul>
+	</div>
+</div>

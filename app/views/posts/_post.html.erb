@@ -2,10 +2,13 @@
 	<div class="span1">
 		<%= gravatar_for post.user %>
 	</div>
-	<div class="span8">
-		<h2><%=post.title%></h2>
+	<div class="span11">
+		<% if current_user==post.user || is_admin? %>
+		<%= render 'admin_links', post: post %>
+		<% end %>
+		<h2 class="post-title"><%=post.title%></h2>
 		<p class="byline">
-			Posted by <%= post.user.name%> <%= time_ago_in_words(post.at) %>
+			Posted by <%= link_to post.user.name, post.user %> <%= time_ago_in_words(post.at) %> ago.
 		</p>
 		<% if post.embed_code %>
 		<div class="embed">

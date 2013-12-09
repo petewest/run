@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
-  before_action :admin_user, only: [:create, :edit, :new, :destroy]
-  before_action :get_post_from_params, only: [:edit, :show, :destroy, :update]
+  before_action :signed_in_user, only: [:create, :new]
+  before_action :get_post_from_params, only: [:show]
+  before_action :correct_user, only: [:edit, :destroy, :update]
   def edit
   end
 
@@ -31,6 +32,19 @@ class PostsController < ApplicationController
   end
   
   def destroy
+    @post.destroy
+    flash[:success]="Post deleted!"
+    redirect_to posts_path
+  end
+  
+  def update
+    if @post.update_attributes(post_params)
+      flash[:success]="Post successfully updated"
+      redirect_to @post
+    else
+      flash.now[:error]="Edit post failed"
+      render 'edit'
+    end
   end
   
   private
@@ -39,5 +53,9 @@ class PostsController < ApplicationController
   end
   def post_params
     params.require(:post).permit(:title, :embed_code, :at, :write_up, :category_id)
+  end
+  def correct_user
+    @post=current_user.posts.find(params[:id])
+    redirect_to root_url if @post.nil?
   end
 end

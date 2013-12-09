@@ -198,19 +198,35 @@ input {
   }
 }
 
-.post {
-	padding-bottom:20px;
-	.title {
-		font-weight:bold;
-		font-size:1.2em;
-	}
-	.embed {
-		
-	}
-	.byline {
+.post-title {
+	margin-bottom:0px;
+}
+
+@mixin de_emphasise {
+	color: $grayLight;
+	font-size:0.8em;
+	line-height: 1em;
+}
+
+.byline {
+	@include de_emphasise;
+	padding-left:20px;
+	margin-bottom:10px;
+	a {
 		color: $grayLight;
-		font-size:0.8em;
 	}
-	.write_up {
-	}
+}
+
+.write_up {
+	padding-bottom:20px;
+}
+
+.post_admin {
+	font-size:0.8em;
+	padding:5px;
+}
+
+.post_admin_right {
+	float:right !important;
+	position:relative;
 }
