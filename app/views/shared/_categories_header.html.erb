@@ -1,0 +1,6 @@
+<% current_category=params[:category] %>
+<% all_categories.each do |category| %>
+	<li<%= ' class=active' if current_category==category.stub %>>
+	<%= link_to category.name, cat_path(category.stub) %>
+	</li>
+<% end %>
