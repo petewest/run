@@ -224,9 +224,16 @@ input {
 .post_admin {
 	font-size:0.8em;
 	padding:5px;
+	color:$grayLight;
 }
 
 .post_admin_right {
 	float:right !important;
 	position:relative;
+	ul {
+		li {
+			list-style:none;
+			display:inline;
+		}
+	}
 }
