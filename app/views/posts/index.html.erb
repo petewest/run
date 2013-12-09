@@ -1,2 +1,12 @@
-<h1>Posts#index</h1>
-<p>Find me in app/views/posts/index.html.erb</p>
+<% provide(:title, 'Posts')%>
+<div class="container">
+<h1>Runs</h1>
+<% if @posts %>
+   <%= render @posts %>
+<% else %>
+<h2>Sorry, no posts found<%= " in #{current_category.name}" if current_category %></h2>
+<% end%>
+
+<%= will_paginate %>
+
+</div>

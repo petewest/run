@@ -5,7 +5,11 @@ class PostsController < ApplicationController
   end
 
   def index
-    @posts=Post.all
+    if current_category
+      @posts=current_category.posts.paginate(page: params[:page])
+    else
+      @posts=Post.paginate(page: params[:page])
+    end
   end
 
   def new
