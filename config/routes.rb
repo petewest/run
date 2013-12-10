@@ -9,7 +9,7 @@ Run::Application.routes.draw do
     resources :sessions, only: [:index, :destroy]
   end
   resources :sessions, only: [:new, :create, :destroy]
-  root 'static_pages#home'
+  root 'posts#index'
 
   # Test having category routes available:
   # this should probably be the last route?

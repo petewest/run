@@ -3,16 +3,16 @@
 		<%= gravatar_for post.user %>
 	</div>
 	<div class="span11">
-		<% if current_user==post.user || is_admin? %>
+		<% if (current_user==post.user) || is_admin? %>
 		<%= render 'admin_links', post: post %>
 		<% end %>
 		<h2 class="post-title"><%=post.title%></h2>
 		<p class="byline">
 			Posted by <%= link_to post.user.name, post.user %> <%= time_ago_in_words(post.at) %> ago.
 		</p>
-		<% if post.embed_code %>
+		<% if !post.embed_code.blank? %>
 		<div class="embed">
-			<%= post.embed_code %>
+			<iframe src="<%= post.embed_code %>"></iframe>
 		</div>
 		<% end %>
 		<div class="write_up">
