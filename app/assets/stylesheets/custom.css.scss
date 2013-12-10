@@ -55,16 +55,14 @@ p {
 
 /* header styles */
 
-#logo {
+.navbar-brand {
   float: left;
   margin-right: 10px;
   font-size: 1.7em;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: -1px;
-  padding-top: 9px;
   font-weight: bold;
-  line-height: 1;
   &:hover {
     color: #fff;
     text-decoration: none;
@@ -138,7 +136,6 @@ aside {
 
 input, textarea, select, .uneditable-input {
   border: 1px solid #bbb;
-  width: 100%;
   margin-bottom: 15px;
   @include box_sizing;
 }
@@ -228,8 +225,8 @@ input {
 }
 
 .post_admin_right {
-	float:right !important;
-	position:relative;
+	position: relative;
+	float:right;
 	ul {
 		li {
 			list-style:none;
