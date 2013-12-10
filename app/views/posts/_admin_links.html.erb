@@ -2,13 +2,13 @@
 	<ul class="post_admin">
 		<li>
 			<%= link_to(edit_post_path(post)) do %>
-			<span class="icon icon-pencil" title="Edit"></span>
+			<span class="glyphicon glyphicon-pencil" title="Edit"></span>
 			<% end %>
 		</li>
 		<li>
 			<%= link_to(post, method: :delete, data:
 			{confirm: "This will delete the category and all posts, are you sure?"}) do %>
-			<span class="icon icon-remove" title="Delete"></span>
+			<span class="glyphicon glyphicon-remove" title="Delete"></span>
 			<% end %>
 		</li>
 	</ul>

@@ -111,7 +111,7 @@ footer {
 aside {
   section {
     padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $gray-lighter;
     &:first-child {
       border: 0;
       padding-top: 0;
@@ -166,9 +166,9 @@ input {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $gray-lighter;
     &:last-child {
-      border-bottom: 1px solid $grayLighter;
+      border-bottom: 1px solid $gray-lighter;
     }
   }
 }
@@ -179,9 +179,9 @@ input {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $gray-lighter;
     &:last-child {
-      border-bottom: 1px solid $grayLighter;
+      border-bottom: 1px solid $gray-lighter;
     }
   }
 }
@@ -191,9 +191,9 @@ input {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-top: 1px solid $grayLighter;
+    border-top: 1px solid $gray-lighter;
     &:last-child {
-      border-bottom: 1px solid $grayLighter;
+      border-bottom: 1px solid $gray-lighter;
     }
   }
 }
@@ -203,7 +203,7 @@ input {
 }
 
 @mixin de_emphasise {
-	color: $grayLight;
+	color: $gray-light;
 	font-size:0.8em;
 	line-height: 1em;
 }
@@ -213,7 +213,7 @@ input {
 	padding-left:20px;
 	margin-bottom:10px;
 	a {
-		color: $grayLight;
+		color: $gray-light;
 	}
 }
 
@@ -224,7 +224,7 @@ input {
 .post_admin {
 	font-size:0.8em;
 	padding:5px;
-	color:$grayLight;
+	color:$gray-light;
 }
 
 .post_admin_right {
