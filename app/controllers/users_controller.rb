@@ -41,7 +41,7 @@ class UsersController < ApplicationController
       flash[:success]="Profile changed"
       redirect_to @user
     else
-      flash.now[:error]="Error saving profile"
+      flash.now[:danger]="Error saving profile"
       render 'edit'
     end
   end

@@ -33,7 +33,7 @@ class CategoriesController < ApplicationController
       flash[:success]="Category updated"
       redirect_to @category
     else
-      flash.now[:error]="Update failed"
+      flash.now[:danger]="Update failed"
       render 'edit'
     end
   end

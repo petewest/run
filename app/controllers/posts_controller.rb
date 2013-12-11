@@ -26,7 +26,7 @@ class PostsController < ApplicationController
       flash[:success]="Post created!"
       redirect_to @post
     else
-      flash.now[:error]="Error creating post"
+      flash.now[:danger]="Error creating post"
       render 'new'
     end
   end
@@ -42,7 +42,7 @@ class PostsController < ApplicationController
       flash[:success]="Post successfully updated"
       redirect_to @post
     else
-      flash.now[:error]="Edit post failed"
+      flash.now[:danger]="Edit post failed"
       render 'edit'
     end
   end
