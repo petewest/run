@@ -3,4 +3,4 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 $ ->
-  $(".jquery-ui-date").datepicker(dateFormat: "yy-mm-dd")
+  $("#post_at").datepicker(dateFormat: "yy-mm-dd")
