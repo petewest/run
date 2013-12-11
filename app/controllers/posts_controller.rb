@@ -1,7 +1,7 @@
 class PostsController < ApplicationController
   before_action :signed_in_user, only: [:create, :new]
   before_action :get_post_from_params, only: [:show]
-  before_action :correct_user, only: [:edit, :destroy, :update]
+  before_action :correct_user_or_admin, only: [:edit, :destroy, :update]
   def edit
   end
 
@@ -58,8 +58,12 @@ class PostsController < ApplicationController
   def post_params
     params.require(:post).permit(:title, :write_up, :category_id)
   end
-  def correct_user
-    @post=current_user.posts.find(params[:id])
+  def correct_user_or_admin
+    if current_user.admin?
+      @post=Post.find(params[:id])
+    else
+      @post=current_user.posts.find(params[:id])
+    end
     redirect_to root_url if @post.nil?
   end
 end
