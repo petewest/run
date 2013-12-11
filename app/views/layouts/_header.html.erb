@@ -27,7 +27,11 @@
 					</li>					
 					<% end %>
 					<li id="fat-menu" class="dropdown">
-						<a href='#' class="dropdown-toggle" data-toggle="dropdown"><%= current_user.name %> <b class="caret"></b>
+						<a href='#' class="dropdown-toggle" data-toggle="dropdown">
+<div style="display:inline;">
+<%= gravatar_for current_user, size: 20 %>
+</div>
+<%= current_user.name %> <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li><%= link_to "Profile", current_user %></li>
