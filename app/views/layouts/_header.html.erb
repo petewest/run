@@ -1,22 +1,29 @@
 <header class="navbar navbar-static-top navbar-default">
-<div class="container">
-<nav>
-	<div class="navbar-header">
-			<%= link_to 'Run', root_url, class: "navbar-brand" %>
-</div>
-	<div class="navbar-header">
+	<div class="container">
+		<nav>
+			<div class="navbar-header">
+				<%= link_to 'Run', root_url, class: "navbar-brand" %>
+			</div>
+			<div class="navbar-header">
 				<ul class="nav navbar-nav">
 					<%= render 'shared/categories_header' %>
 				</ul>
-</div>
-<div class="navbar-header navbar-right">
+			</div>
+			<div class="navbar-header navbar-right">
 				<ul class="nav navbar-nav">
 					<li><%= link_to "About", about_path %></li>
 					<% if signed_in? %>
 					<li><%= link_to "Users", users_path %></li>
-					<li><%= link_to "New post", new_post_path %></li>
+					<li id="new-menu" class="dropdown">
+						<a href='#' class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li><%= link_to "New activity", '#' %></li>
+							<li><%= link_to "New post", new_post_path %></li>
+						</ul>
+					</li>
 					<% if is_admin? %>
-					<li id="fat-menu" class="dropdown">
+					<li id="admin-menu" class="dropdown">
 						<a href='#' class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
@@ -26,12 +33,12 @@
 						</ul>
 					</li>					
 					<% end %>
-					<li id="fat-menu" class="dropdown">
+					<li id="profile-menu" class="dropdown">
 						<a href='#' class="dropdown-toggle" data-toggle="dropdown">
-<div style="display:inline;">
-<%= gravatar_for current_user, size: 20 %>
-</div>
-<%= current_user.name %> <b class="caret"></b>
+							<div style="display:inline;">
+								<%= gravatar_for current_user, size: 20 %>
+							</div>
+							<%= current_user.name %> <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li><%= link_to "Profile", current_user %></li>
@@ -49,7 +56,7 @@
 					<li><%= link_to "Sign up", signup_path  %></li>
 					<% end %>
 				</ul>
+			</div>
+		</nav>
 	</div>
-			</nav>
-</div>
 </header>
