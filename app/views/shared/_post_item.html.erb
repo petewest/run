@@ -1,0 +1,10 @@
+<% if (current_user==post.user) || is_admin? %>
+<%= render 'posts/admin_links', post: post %>
+<% end %>
+<h2 class="post-title"><%=post.title%></h2>
+<p class="byline">
+	Posted by <%= link_to post.user.name, post.user %> <%= link_to time_ago_in_words(post.created_at), post %> ago.
+</p>
+<div class="write_up">
+	<%= RedCloth.new(post.write_up, [:sanitize_html]).to_html.html_safe %>
+</div>

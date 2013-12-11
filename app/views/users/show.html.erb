@@ -1,12 +1,31 @@
 <% provide(:title, @user.name)%>
 
 <div class="row">
-  <aside class="col-md-6">
-    <section>
-      <h1>
-        <%= gravatar_for @user %>
-        <%= @user.name %>
-      </h1>
-    </section>
-  </aside>
+	<div class="col-md-3">
+		<div class="row">
+			<aside>
+				<section>
+					<h1>
+						<%= gravatar_for @user %>
+						<%= @user.name %>
+					</h1>
+				</section>
+			</aside>
+		</div>
+		<div class="row">
+			<div class="summary">
+				Summary:
+				<ul>
+					<li><abbr title="Total distance"><span class="glyphicon glyphicon-resize-horizontal"></span></abbr> 10km</li>
+					<li><abbr title="Total time"><span class="glyphicon glyphicon-time"></span></abbr> 10 hours</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-9">
+		<% if @user_posts.any? %>
+		<%= render partial: 'shared/post_feed', collection: @user_posts %>
+		<%= will_paginate @user_posts %>
+		<% end %>
+	</div>
 </div>
