@@ -11,6 +11,10 @@ class PostsController < ApplicationController
     else
       @posts=Post.paginate(page: params[:page])
     end
+    respond_to do |format|
+      format.html
+      format.rss { render layout: false }
+    end
   end
 
   def new
