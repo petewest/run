@@ -6,17 +6,6 @@
 </div>
 
 <div class="form-group">
-<%= f.label :embed_code %>
-<%= f.text_field :embed_code, class: "form-control" %>
-<p class="help-block">Use the "share" or "embed link" options from your tracking site to show a map with your post</p>
-</div>
-
-<div class="form-group">
-<%= f.label :at %>
-<%= f.datetime_field :at, class: "form-control", placeholder: "yyyy-mm-dd" %>
-</div>
-
-<div class="form-group">
 <%= f.label :category_id %>
 <%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "form-control" %>
 </div>

@@ -56,7 +56,7 @@ class PostsController < ApplicationController
     @post=Post.find(params[:id])
   end
   def post_params
-    params.require(:post).permit(:title, :embed_code, :at, :write_up, :category_id)
+    params.require(:post).permit(:title, :write_up, :category_id)
   end
   def correct_user
     @post=current_user.posts.find(params[:id])

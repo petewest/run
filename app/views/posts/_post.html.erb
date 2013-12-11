@@ -8,13 +8,8 @@
 		<% end %>
 		<h2 class="post-title"><%=post.title%></h2>
 		<p class="byline">
-			Posted by <%= link_to post.user.name, post.user %> <%= time_ago_in_words(post.at) %> ago.
+			Posted by <%= link_to post.user.name, post.user %> <%= link_to time_ago_in_words(post.created_at), post %> ago.
 		</p>
-		<% if !post.embed_code.blank? %>
-		<div class="embed">
-			<iframe src="<%= post.embed_code %>"></iframe>
-		</div>
-		<% end %>
 		<div class="write_up">
 			<%= post.write_up %>
 		</div>

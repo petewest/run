@@ -21,7 +21,6 @@ describe "Post pages" do
     describe "with valid information" do
       before do
         fill_in "Title",         with: "Race 1"
-        fill_in "At",        with: "2013-12-01 10:30"
         fill_in "Category",     with: category.name
         fill_in "Write up", with: "Woohoo, what a run!"
       end
