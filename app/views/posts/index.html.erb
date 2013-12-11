@@ -3,7 +3,7 @@
 	<h1>
 <%= current_category ? current_category.name : 'Runs' %>
 </h1>
-<% if @posts %>
+<% if @posts.any? %>
    <%= render @posts %>
 <% else %>
 <h2>Sorry, no posts found<%= " in #{current_category.name}" if current_category %></h2>
