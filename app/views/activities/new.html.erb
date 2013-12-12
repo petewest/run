@@ -42,7 +42,7 @@
 				var devices = json.controller.getDevices();
 				for( var i=0; i < devices.length; i++ ) {
 					var option=document.createElement("option");
-					option.value=i;
+					option.value=devices[i].getNumber();
 					option.text=devices[i].getDisplayName();
 					device_list.add(option, device_list.options[null])
 				}
