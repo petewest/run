@@ -1,3 +1,60 @@
 <% provide(:title, "Add new activity")%>
 
 <h1>Add new activity</h1>
+
+<div class="row">
+	<div class="col-md-3">
+		Import from Garmin
+		<select id="list_of_devices", name="device">
+			<option value="-1">Reading device list</option>
+		</select>
+		<div id="garmin_device_selector"></div>
+		<button>Select</button>
+	</div>
+	<div class="col-md-3">
+		<div id="garmin_activity"></div>
+	</div>
+</div>
+
+<% content_for :js do %>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/prototype/prototype.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-Broadcaster.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-BrowserDetect.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-DateTimeFormat.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-PluginDetect.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-XmlConverter.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminObjectGenerator.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminPluginUtils.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDevice.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDevicePlugin.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDeviceControl.js"></script>
+<!--
+//	         pathKeyPairsArray: ["http://run.petewest.org",
+//	                             "a640806a0d1262ae4d2b43733773f3f0"],
+-->	
+	<script type="text/javascript">
+	var listener = Class.create();
+	    listener.prototype = {
+	        initialize: function() {
+	},
+	        onFinishFindDevices: function(json) {
+				var device_list = document.getElementById("list_of_devices");
+				var devices = json.controller.getDevices();
+				for( var i=0; i < devices.length; i++ ) {
+					var option=document.createElement("option");
+					option.value=i;
+					option.text=devices[i].getDisplayName();
+					device_list.add(option, device_list.options[null])
+				}
+				device_list.selectedIndex=devices.length; //retrieve last selected id or string from DB 
+			}
+	    }
+	    function load() { //called from the html page onload event
+	        control = new Garmin.DeviceControl();
+	        control.register(new listener());
+	        var unlocked = control.unlock(/*"http://mydomain.com/","yourKeyGoesHere"*/);
+	        control.findDevices();
+	    }
+		window.onload = load;
+	</script>
+<% end %>
