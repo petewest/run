@@ -1,4 +1,4 @@
-class ActivitesController < ApplicationController
+class ActivitiesController < ApplicationController
   before_action :signed_in_user, only: [:new, :create, :index]
   before_action :correct_user_or_admin, only: [:destroy, :show, :edit, :update]
   
@@ -60,5 +60,4 @@ class ActivitesController < ApplicationController
     end
     redirect_to root_url if @activity.nil?
   end
-  
 end

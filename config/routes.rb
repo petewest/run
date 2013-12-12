@@ -6,8 +6,10 @@ Run::Application.routes.draw do
   resources :categories
   resources :posts
   resources :activity_types, only: [:index, :new, :create, :destroy, :update, :edit]
+  resources :activities, only: [:new, :create, :destroy, :update, :edit]
   resources :users do
     resources :sessions, only: [:index, :destroy]
+    resources :activities, only: [:index]
   end
   resources :sessions, only: [:new, :create, :destroy]
   root 'posts#index'
