@@ -21,4 +21,14 @@ FactoryGirl.define do
     user
     category
   end
+  factory :activity_type do
+    name "Run"
+  end
+  factory :activity do
+    start_time "2013-12-02 09:00"
+    distance 20
+    height_gain 500
+    activity_type
+    user
+  end
 end

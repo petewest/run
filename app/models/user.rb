@@ -28,4 +28,5 @@ class User < ActiveRecord::Base
   
   has_many :sessions, dependent: :destroy
   has_many :posts, dependent: :destroy
+  has_many :activities, dependent: :destroy
 end

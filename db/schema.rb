@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131212191120) do
+ActiveRecord::Schema.define(version: 20131212213331) do
+
+  create_table "activities", force: true do |t|
+    t.datetime "start_time"
+    t.float    "distance"
+    t.integer  "duration"
+    t.float    "height_gain"
+    t.text     "polyline"
+    t.text     "time_series"
+    t.text     "elevation_series"
+    t.text     "hr_series"
+    t.text     "pace_series"
+    t.text     "gpx"
+    t.integer  "activity_type_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "activities", ["user_id", "start_time"], name: "index_activities_on_user_id_and_start_time"
 
   create_table "activity_types", force: true do |t|
     t.string   "name"
