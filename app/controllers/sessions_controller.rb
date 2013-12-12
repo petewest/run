@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
   end
   
   def index
-    if is_admin?
+    if params[:user_id] && is_admin?
       @sessions=User.find(params[:user_id]).sessions.paginate(page: params[:page])
     else
       @sessions=current_user.sessions.paginate(page: params[:page])
