@@ -7,9 +7,9 @@ class PostsController < ApplicationController
 
   def index
     if current_category
-      @posts=current_category.posts.paginate(page: params[:page])
+      @posts=current_category.posts.includes(:user).paginate(page: params[:page])
     else
-      @posts=Post.paginate(page: params[:page])
+      @posts=Post.includes(:user).paginate(page: params[:page])
     end
     respond_to do |format|
       format.html
