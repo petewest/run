@@ -1,0 +1,12 @@
+<% provide(:title, "All activity types")%>
+
+<h1>Activity types</h1>
+
+<div class="content">
+
+<%= link_to "Create new", new_activity_type_path %>
+
+<ul class="activity_types">
+		<%= render @activity_types %>
+</ul>
+</div>

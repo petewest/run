@@ -1,0 +1,4 @@
+<li>
+		Name: <%= activity_type.name %> | <%= link_to "Edit", edit_activity_type_path(activity_type)%>
+		| <%= link_to "Delete", activity_type, method: :delete, data: {confirm: "Are you sure?"} %>
+</li>

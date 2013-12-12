@@ -19,7 +19,7 @@ describe "Authentication" do
       it { should have_title('Sign in') }
       it { should have_selector('div.alert.alert-danger', text: 'Authentication failed') }
       describe "after visiting another page" do
-        before { click_link "RUN" }
+        before { click_link "Run" }
         it { should_not have_selector('div.alert.alert-danger') }
       end
     end

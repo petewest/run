@@ -28,8 +28,7 @@ module SessionsHelper
   
   #change default getter to lookup based on either session variable or cookie
   def current_user
-    @current_session||=current_session
-    if (@current_session.nil?)
+    if (current_session.nil?)
       @current_user=nil
     else
       @current_user||=current_session.user
@@ -51,6 +50,7 @@ module SessionsHelper
 	      @current_session||=Session.find_by(remember_token: Session.encrypt(cookies[:remember_token]))
 	      cookies.delete(:remember_token) if @current_session.nil?
 	    end
+	    #Refresh the timestamp if it's over an hour old
 	    @current_session.touch if @current_session && @current_session[:updated_at]<Time.now-1.hour
     end
     @current_session

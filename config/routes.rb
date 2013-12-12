@@ -5,6 +5,7 @@ Run::Application.routes.draw do
   match "/signout", to: 'sessions#destroy', via: 'delete'
   resources :categories
   resources :posts
+  resources :activity_types, only: [:index, :new, :create, :destroy, :update, :edit]
   resources :users do
     resources :sessions, only: [:index, :destroy]
   end
