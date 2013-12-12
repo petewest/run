@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "Post pages" do
   let(:admin) { FactoryGirl.create(:admin) }
+  let(:category) {FactoryGirl.create(:category) }
   subject { page }
 
   describe "new page" do
@@ -25,10 +26,10 @@ describe "Post pages" do
         fill_in "Write up", with: "Woohoo, what a run!"
       end
 
-      it "should create a category" do
+      it "should create a post" do
         expect { click_button submit }.to change(Post, :count).by(1)
       end
-      describe "after saving the category" do
+      describe "after saving the post" do
         before { click_button submit }
         let(:post) { Post.find_by_title("Race 1") }
 

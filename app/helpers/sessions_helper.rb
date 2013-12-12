@@ -51,7 +51,7 @@ module SessionsHelper
 	      @current_session||=Session.find_by(remember_token: Session.encrypt(cookies[:remember_token]))
 	      cookies.delete(:remember_token) if @current_session.nil?
 	    end
-	    @current_session.touch unless @current_session.nil?
+	    @current_session.touch if @current_session && @current_session[:updated_at]<Time.now-1.hour
     end
     @current_session
   end

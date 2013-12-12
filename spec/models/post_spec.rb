@@ -12,7 +12,6 @@ describe Post do
   it {should be_valid}
   it {should respond_to(:title)}
   it {should respond_to(:write_up)}
-  it {should respond_to(:embed_code)}
   
   describe "When title is empty" do
     before {@post.title=''}
