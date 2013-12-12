@@ -10,6 +10,8 @@ Run::Application.routes.draw do
   end
   resources :sessions, only: [:new, :create, :destroy]
   root 'posts#index'
+  
+  match '/feed', to: 'posts#index', via: 'get', defaults: {format: 'rss'}
 
   # Test having category routes available:
   # this should probably be the last route?
