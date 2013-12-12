@@ -41,14 +41,17 @@ module SessionsHelper
   end
 
   def current_session
-    if (session[:remember_token])
-      @current_session||=Session.find_by(remember_token: Session.encrypt(session[:remember_token]))
-      #In case the login session has been cleared from another login, we'll remove the token
-      #from the session if we're still nil at this point
-      session.delete(:remember_token) if @current_session.nil?
-    elsif (cookies[:remember_token])
-      @current_session||=Session.find_by(remember_token: Session.encrypt(cookies[:remember_token]))
-      cookies.delete(:remember_token) if @current_session.nil?
+    if (@current_session.nil?)
+	    if (session[:remember_token])
+	      @current_session||=Session.find_by(remember_token: Session.encrypt(session[:remember_token]))
+	      #In case the login session has been cleared from another login, we'll remove the token
+	      #from the session if we're still nil at this point
+	      session.delete(:remember_token) if @current_session.nil?
+	    elsif (cookies[:remember_token])
+	      @current_session||=Session.find_by(remember_token: Session.encrypt(cookies[:remember_token]))
+	      cookies.delete(:remember_token) if @current_session.nil?
+	    end
+	    @current_session.touch unless @current_session.nil?
     end
     @current_session
   end
