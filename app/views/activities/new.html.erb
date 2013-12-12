@@ -52,7 +52,7 @@
 	    function load() { //called from the html page onload event
 	        control = new Garmin.DeviceControl();
 	        control.register(new listener());
-	        var unlocked = control.unlock(/*"http://mydomain.com/","yourKeyGoesHere"*/);
+	        var unlocked = control.unlock(/*"http://run.petewest.org","a640806a0d1262ae4d2b43733773f3f0"*/);
 	        control.findDevices();
 	    }
 		window.onload = load;
