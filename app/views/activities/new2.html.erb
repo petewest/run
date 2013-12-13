@@ -1,0 +1,134 @@
+<% provide(:title, "Add new activity")%>
+
+<h1>Add new activity</h1>
+
+<div class="row">
+	<div class="col-md-3">
+		Import from Garmin device
+		<ul id="list_of_devices">
+		</ul>
+	</div>
+	<div class="col-md-6">
+		<div id="activities_header"></div>
+		<div id="activities_container">
+			<table id="list_of_activities">
+				<tr>
+				<th>Import</th><th>Activity date</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<% content_for :js_includes do %>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/prototype/prototype.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-Broadcaster.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-BrowserDetect.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-DateTimeFormat.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-PluginDetect.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-XmlConverter.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminObjectGenerator.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminPluginUtils.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDevice.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDevicePlugin.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDeviceControl.js"></script>
+<% end %>
+<% content_for :jquery do%>
+<script type="text/javascript">
+(function($jq) {
+	//Have to use $jq alias to save me from decoupling Garmin API from prototype
+	var garmin_controller;
+	/*"http://run.petewest.org","a640806a0d1262ae4d2b43733773f3f0"*/
+	var Garmin_Controller = Class.create();
+	Garmin_Controller.prototype = {
+		initialize: function() {
+			this.read_mode=Garmin.DeviceControl.FILE_TYPES.tcxDir
+			this.controller=null;
+			this.factory=null;
+			this.initialise_controller();
+			
+			if (this.controller != null) {
+				this.controller.findDevices();
+			}
+		},
+		initialise_controller: function() {
+			this.controller = new Garmin.DeviceControl();
+			this.controller.register(this);
+
+			if(this.controller.unlock()) {
+			} else {
+				this.controller = null;
+			}
+		},
+		onFinishFindDevices: function(json) {
+			var $device_list = $jq("#list_of_devices");
+			var devices = json.controller.getDevices();
+			for( var i=0; i < devices.length; i++ ) {
+				var $new_link=$jq('<a>').attr({class:'garmin_device', href:'#'}).append(devices[i].getDisplayName());
+				$new_link.data("device", devices[i]);
+				$new_link.click(function(event) {
+					select_device($jq(this));
+					event.preventDefault();
+				});
+				$device_list.append($jq('<li>').append($new_link));
+			}
+		},
+		onFinishReadFromDevice: function(json) {
+			//We've got the data from the device, now process it
+			switch(this.read_mode) {
+				case Garmin.DeviceControl.FILE_TYPES.gpx:
+				this.factory = Garmin.GpxActivityFactory;
+				break;
+				case Garmin.DeviceControl.FILE_TYPES.tcx:
+				case Garmin.DeviceControl.FILE_TYPES.crs:
+				case Garmin.DeviceControl.FILE_TYPES.tcxDir:
+				case Garmin.DeviceControl.FILE_TYPES.crsDir:
+				case Garmin.DeviceControl.FILE_TYPES.tcxDetail:
+				case Garmin.DeviceControl.FILE_TYPES.crsDetail:
+				this.factory = Garmin.TcxActivityFactory;
+				break;
+				default:
+				// No factory for unsupported type.
+				this.factory = null;
+				break;
+			}
+			if (this.factory != null) {
+				switch(this.read_mode) {
+					case Garmin.DeviceControl.FILE_TYPES.crsDir:
+					case Garmin.DeviceControl.FILE_TYPES.tcxDir:
+					this.activities = this.factory.parseDocument(json.controller.gpsData);
+					if (this.activities!=null) {
+						this.read_activity_listing();
+					}
+					break;
+				}
+			}
+		},
+		read_activity_listing: function() {
+			$jq("#activities_header").html("Processing entries");
+			var $activity_table = $jq("#list_of_activities");
+			for (var i=0;i<this.activities.length();i++) {
+				/*$new_activity=$('<a>').attr({class:"garmin_activity", href:"#"}).append(this.activities[i].getAttribute("activityName"));
+				$new_activity.data("activity", this.activities[i]);
+				$new_row=$activity_table.append($jq('<tr>'));
+				$new_row.append($jq('<td>').append("Checkbox here"));
+				$new_row.append($jq('<td>').append($new_activity));*/
+			}
+		}
+	}
+	function find_garmin_devices() { //called from the html page onload event
+		garmin_controller=new Garmin_Controller();
+	}
+	function select_device($dev) {
+		var device=$dev.data("device");
+		$jq("#activities_header").html("Reading activities from "+device.getDisplayName());
+		//Tell the device ID which unit we're looking at:
+		garmin_controller.controller.setDeviceId(device.getNumber());
+		//Trigger a directory read of the device
+		//garmin_controller.readDataFromDevice(Garmin.DeviceControl.FILE_TYPES.tcxDir);
+	}
+
+	$jq( document ).ready (find_garmin_devices);
+})(jQuery);
+</script>
+<%end %>
