@@ -359,15 +359,23 @@
 
 		listDevices: function(devices) {
 			this._clearHtmlSelect(this.deviceSelect);
+			var $device_list=$jq("#list_of_devices");
 			for( var i=0; i < devices.length; i++ ) {
 	           	this.deviceSelect.options[i] = new Option(devices[i].getDisplayName(),devices[i].getNumber());
 	           	if(devices[i].getNumber() == this.garminController.deviceNumber) {
 	           		this.deviceSelect.selectedIndex = i;
 	           		this.showDeviceInfo(devices[i]);
 	           	}
+				var $new_link=$jq('<a>').attr({class:'garmin_device', href:'#'}).append(devices[i].getDisplayName());
+				$new_link.data("device", devices[i]);
+				$new_link.click({controller: this}, function(event) {
+					event.preventDefault();
+					event.data.controller.select_device($jq(this));
+				});
+				$device_list.append($jq('<li>').append($new_link));
+	
 			}
 	   		this.deviceSelect.selectedIndex = 0;
-	       	this.showDeviceInfo(devices[0]);
 			this.deviceSelect.onchange = function() {
 				var device = this.garminController.getDevices()[this.deviceSelect.value];
 				this.showDeviceInfo(device);
@@ -375,6 +383,16 @@
 			}.bind(this)
 			this.deviceSelect.disabled = false;
 		},
+		
+		select_device: function ($dev) {
+			var device=$dev.data("device");
+			$jq("#activities_header").html("Reading activities from "+device.getDisplayName());
+			//Tell the device ID which unit we're looking at:
+			this.garminController.setDeviceNumber(device.getNumber());
+			//Trigger a directory read of the device
+			//garmin_controller.readDataFromDevice(Garmin.DeviceControl.FILE_TYPES.tcxDir);
+		},
+		
 
 		showDeviceInfo: function(device) {
 			this.deviceInfo.innerHTML = "Part Number:\t\t" + device.getPartNumber() + "\n";
