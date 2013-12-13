@@ -7,28 +7,19 @@
 		Import from Garmin device
 		<ul id="list_of_devices">
 		</ul>
+		<div id="deviceBox">
+			<input type="button" value="Re-scan" id="findDevicesButton" disabled="true" />
+			<input type="button" value="Cancel Find Devices" id="cancelFindDevicesButton" disabled="true" />
+		</div>
 	</div>
 	<div class="col-md-6">
 		<div id="statusBox">
 			<div id="statusText">Status Text</div>
 
 			<div id="progressBar" style="display: none;" align="left">
-				<div id="progressWrapper"><div id="progressBarDisplay">&#160;</div></div>
+				<div id="progressWrapper"><div id="progressBarDisplay"></div></div>
 			</div>
 		</div>
-
-		<div id="deviceBox">
-			<input type="button" value="Find Devices" id="findDevicesButton" disabled="true" />
-			<input type="button" value="Cancel Find Devices" id="cancelFindDevicesButton" disabled="true" />
-
-			<select name="deviceSelect" id="deviceSelect" disabled="true">
-				<option value="-1">No Devices Found</option>
-			</select>
-			<br />
-
-			<textarea id="deviceInfoText" rows="11" cols="60"></textarea>
-		</div>
-
 
 		<div id="readBox">
 			File Type:
@@ -80,34 +71,11 @@
 				<option value="-1">No Waypoints Found</option>
 			</select>
 
-			<div id="readMap" style="width:400px; height:400px;">&#160;</div>
-
 			Read Data String: <br />
 			<textarea id="dataString" rows="25" cols="50"></textarea>
 
 			Compressed File String: <br />
 			<textarea id="compressedDataString" rows="25" cols="50"></textarea>	
-		</div>
-
-		<div id="writeBox">
-			<input type="button" value="Write To Device" id="writeDataButton" disabled="true" />
-			<input type="button" value="Cancel Write To Device" id="cancelWriteDataButton" disabled="true" />
-			<br />
-			<select name="writeDataSelect" id="writeDataSelect" disabled="true">
-				<option value="" selected>--Select Test Data--</option>
-				<option value="data/waypoints.gpx">GPX - Waypoints</option>
-				<option value="data/routes.gpx">GPX - Routes</option>
-				<option value="data/walk_courses.tcx">TCX - Courses</option>
-				<option value="data/1mileworkout.wkt">TCX - Workouts</option>
-				<option value="data/user_profile.tcx">TCX - User Profile</option>
-				<option value="data/activity-goals-fr405.tcx">TCX - Activity Goals</option>
-			</select>
-			<br />
-			Filename: <input type="text" id="writeDataFilename" value="test.gpx"><br />
-			Write Contents:<br /> 
-			<textarea id="writeDataText" name="writeDataText" rows="21" cols="50">
-
-			</textarea>
 		</div>
 		
 	</div>
@@ -171,7 +139,6 @@
 	        this.findDevicesButton = $("findDevicesButton");
 	        this.cancelFindDevicesButton = $("cancelFindDevicesButton");
 	        this.deviceSelect = $("deviceSelect");
-	        this.deviceInfo = $("deviceInfoText");
 
 			this.fileTypeSelect=$("fileTypeSelect");
 	        this.readDataButton = $("readDataButton");
@@ -200,12 +167,7 @@
 			this.fileTypeRead = this.fileTypeSelect.value;
 
 			if(this.garminController && this.garminController.isPluginInitialized()) {
-		        this.findDevicesButton.disabled = false;
-		        this.findDevicesButton.onclick = function() {
-		        	this.findDevicesButton.disabled = true;
-		        	this.cancelFindDevicesButton.disabled = false;
-		        	this.garminController.findDevices();
-		        }.bind(this)
+	        	this.garminController.findDevices();
 			}		
 		},
 
@@ -240,6 +202,7 @@
 
 	    onStartFindDevices: function(json) {
 	        this.setStatus("Looking for connected Garmin devices");
+			this.findDevicesButton.disabled=true;
 	    },
 
 	    onFinishFindDevices: function(json) {
@@ -361,11 +324,6 @@
 			this._clearHtmlSelect(this.deviceSelect);
 			var $device_list=$jq("#list_of_devices");
 			for( var i=0; i < devices.length; i++ ) {
-	           	this.deviceSelect.options[i] = new Option(devices[i].getDisplayName(),devices[i].getNumber());
-	           	if(devices[i].getNumber() == this.garminController.deviceNumber) {
-	           		this.deviceSelect.selectedIndex = i;
-	           		this.showDeviceInfo(devices[i]);
-	           	}
 				var $new_link=$jq('<a>').attr({class:'garmin_device', href:'#'}).append(devices[i].getDisplayName());
 				$new_link.data("device", devices[i]);
 				$new_link.click({controller: this}, function(event) {
@@ -373,15 +331,7 @@
 					event.data.controller.select_device($jq(this));
 				});
 				$device_list.append($jq('<li>').append($new_link));
-	
 			}
-	   		this.deviceSelect.selectedIndex = 0;
-			this.deviceSelect.onchange = function() {
-				var device = this.garminController.getDevices()[this.deviceSelect.value];
-				this.showDeviceInfo(device);
-				this.garminController.setDeviceNumber(this.deviceSelect.value);
-			}.bind(this)
-			this.deviceSelect.disabled = false;
 		},
 		
 		select_device: function ($dev) {
@@ -390,27 +340,9 @@
 			//Tell the device ID which unit we're looking at:
 			this.garminController.setDeviceNumber(device.getNumber());
 			//Trigger a directory read of the device
-			//garmin_controller.readDataFromDevice(Garmin.DeviceControl.FILE_TYPES.tcxDir);
+			//this.garminController.readDataFromDevice(Garmin.DeviceControl.FILE_TYPES.tcxDir);
 		},
 		
-
-		showDeviceInfo: function(device) {
-			this.deviceInfo.innerHTML = "Part Number:\t\t" + device.getPartNumber() + "\n";
-			this.deviceInfo.innerHTML += "Software Version:\t" + device.getSoftwareVersion() + "\n";
-			this.deviceInfo.innerHTML += "Description:\t\t" + device.getDescription() + "\n";
-			this.deviceInfo.innerHTML += "Id:\t\t\t" + device.getId() + "\n\n";
-
-			var dataTypes = device.getDeviceDataTypes().values();		
-			var typeListSize = dataTypes.length;
-			for (var i = 0; i < typeListSize; i++) {
-				this.deviceInfo.innerHTML += "-DataType---------------\n"
-				this.deviceInfo.innerHTML += "  Name:\t\t" + dataTypes[i].getDisplayName() + "\n";
-				this.deviceInfo.innerHTML += "  Extension:\t" + dataTypes[i].getFileExtension() + "\n";
-				this.deviceInfo.innerHTML += "  Read:\t\t" + dataTypes[i].hasReadAccess() + "\n";
-				this.deviceInfo.innerHTML += "  Write:\t" + dataTypes[i].hasWriteAccess() + "\n\n";			
-			}
-		},
-
 	    onProgressReadFromDevice: function(json) {
 		  	this.updateProgressBar(json.progress.getPercentage());
 	    	this.setStatus(json.progress);
@@ -466,7 +398,8 @@
 
 			    			if( this.activities != null ) {
 				    			// If we read a directory, save the directory for the session
-				    			this._createActivityDirectory();
+				    			//this._createActivityDirectory();
+								this.display_activity_list();
 			    			}
 							break;
 						case Garmin.DeviceControl.FILE_TYPES.tcxDetail:
@@ -507,8 +440,8 @@
 			    		// List the activity directory
 						if( this.activities != null) {
 				    		this.setStatus("Listing activity directory...");
-				    		var summary = this._listDirectory(this.activities);
-				    		this.setStatus( new Template("Results: #{routes} routes, #{tracks} tracks and  #{waypoints} waypoints found").evaluate(summary) );
+				    		//var summary = this._listDirectory(this.activities);
+				    		//this.setStatus( new Template("Results: #{routes} routes, #{tracks} tracks and  #{waypoints} waypoints found").evaluate(summary) );
 						} else {
 							this.setStatus("Finished retrieving data.");
 						} 
@@ -563,12 +496,19 @@
 	    _createActivityDirectory: function() {
 	    	this.activityDirectory = new Array();
 	    	this.activityQueue = new Array(); // Initialized here so that we can detect activity selection read status
-
 	    	for( var jj = 0; jj < this.activities.length; jj++) {
 
 	    		this.activityDirectory[jj] = this.activities[jj].getAttribute("activityName");
 	    	}
 	    },
+		display_activity_list: function() {
+			var $activity_table=$jq("#activityListingHeader");
+			var new_activities=''
+			for (var i=0; i<this.activities.length; i++) {
+				new_activities+='<tr><td>check</td><td>' + this.activities[i].getAttribute("activityName") + '</td></tr>';
+			}
+			$activity_table.append(new_activities)
+		},
 
 	    /** Creates the activity queue of selected activities.  This should be called
 	     * only after the user has finished selecting activities.  The queue
