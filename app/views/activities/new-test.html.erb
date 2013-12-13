@@ -1,0 +1,85 @@
+<% provide(:title, "Add new activity")%>
+
+<h1>Add new activity</h1>
+
+<div class="row">
+	<div class="col-md-3">
+		Import from Garmin
+		<ul id="list_of_devices">
+		</ul>
+<!--		<select id="list_of_devices", name="device">
+			<option value="-1">Reading device list</option>
+		</select>
+		<div id="garmin_device_selector"></div>
+		<button>Select</button>
+-->
+	</div>
+	<div class="col-md-3">
+		<div id="garmin_activity"></div>
+	</div>
+</div>
+
+<% content_for :js_includes do %>
+<!--<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/prototype/prototype.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-Broadcaster.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-BrowserDetect.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-DateTimeFormat.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-PluginDetect.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/util/Util-XmlConverter.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminObjectGenerator.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminPluginUtils.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDevice.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDevicePlugin.js"></script>
+<script type="text/javascript" src="http://developer.garmin.com/web/communicator-api/garmin/device/GarminDeviceControl.js"></script>-->
+<!--
+//	         pathKeyPairsArray: ["http://run.petewest.org",
+//	                             "a640806a0d1262ae4d2b43733773f3f0"],
+-->	
+<% end %>
+<% content_for :jquery do%>
+	var garmin_devices = [];
+	var activity_list= $("#garmin_activity");
+/*	var listener = Class.create();
+	    listener.prototype = {
+	        initialize: function() {
+	},
+	        onFinishFindDevices: function(json) {
+				var device_list = $("#list_of_devices");
+				var devices = json.controller.getDevices();
+				for( var i=0; i < devices.length; i++ ) {
+					var option=document.createElement("option");
+
+					option.value=devices[i].getNumber();
+
+					option.text=devices[i].getDisplayName();
+					device_list.add(option, device_list.options[null])
+					device_list.append(
+						$('<li>').append(
+						$('<a>').attr({class:'garmin_device', href:'#'}).append(devices[i].getDisplayName())));
+					garmin_devices.push(devices[i]);
+				}
+				device_list.selectedIndex=devices.length; //retrieve last selected id or string from DB 
+			}
+	    }
+	    function load() { //called from the html page onload event
+	        control = new Garmin.DeviceControl();
+	        control.register(new listener());
+	        var unlocked = control.unlock(/*"http://run.petewest.org","a640806a0d1262ae4d2b43733773f3f0"*/);
+	        control.findDevices();
+	    }
+*/
+	function select_device(dev) {
+		activity_list.html("Device " +dev.html());
+	}
+	function load_test() {
+                                var device_list = $("#list_of_devices");
+		for (var i=0;i<5;i++) {
+                                        $("#list_of_devices").append(
+                                                $('<li>').append(
+                                                $('<a>').attr({class:'garmin_device', href:'#', onclick:'select_device(1)'}).append("Device " + i)));
+
+}
+
+	}
+		$( document ).ready (load_test);
+<%end %>
