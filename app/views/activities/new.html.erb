@@ -337,6 +337,10 @@
 		select_device: function ($dev) {
 			var device=$dev.data("device");
 			$jq("#activities_header").html("Reading activities from "+device.getDisplayName());
+			//remove active styling from all items
+			$jq(".garmin_device").removeClass("active");
+			//and then add it back to this specific one
+			$dev.addClass("active");
 			//Tell the device ID which unit we're looking at:
 			this.garminController.setDeviceNumber(device.getNumber());
 			//Trigger a directory read of the device
@@ -503,11 +507,20 @@
 	    },
 		display_activity_list: function() {
 			var $activity_table=$jq("#activityListingHeader");
-			var new_activities=''
+			var new_activities='';
 			for (var i=0; i<this.activities.length; i++) {
-				new_activities+='<tr><td>check</td><td>' + this.activities[i].getAttribute("activityName") + '</td></tr>';
+				var activity=this.activities[i];
+				var name = activity.getAttribute("activityName");
+				var description = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue().getDateString() 
+										+ " (Duration: " + activity.getStartTime().getDurationTo(activity.getEndTime()) + ")";
+				new_activities+='<tr><td><input type="checkbox" class="activity_check" id="activity_check_'+i+'" value="'+name+'"/></td><td>\n' + description + '</td></tr>';
 			}
-			$activity_table.append(new_activities)
+			$activity_table.append(new_activities);
+			//Add event handlers to these items
+			$jq("input.activity_check").click({controller:this},function(event){
+				var controller=event.data.controller;
+				alert("process data "+this.value+" for uploading");
+			});
 		},
 
 	    /** Creates the activity queue of selected activities.  This should be called
