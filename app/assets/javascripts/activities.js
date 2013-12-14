@@ -1,0 +1,20 @@
+
+//= require ./garmin/prototype/prototype.js
+//= require ./garmin/util/Util-Broadcaster.js
+//= require ./garmin/util/Util-BrowserDetect.js
+//= require ./garmin/util/Util-DateTimeFormat.js
+//= require ./garmin/util/Util-PluginDetect.js
+//= require ./garmin/util/Util-XmlConverter.js
+//= require ./garmin/activity/GarminMeasurement.js
+//= require ./garmin/activity/GarminSample.js
+//= require ./garmin/activity/GarminSeries.js
+//= require ./garmin/activity/GarminActivity.js
+//= require ./garmin/activity/GpxActivityFactory.js
+//= require ./garmin/activity/TcxActivityFactory.js
+//= require ./garmin/device/GarminObjectGenerator.js
+//= require ./garmin/device/GarminGpsDataStructures.js
+//= require ./garmin/device/GarminPluginUtils.js
+//= require ./garmin/device/GarminDevice.js
+//= require ./garmin/device/GarminDevicePlugin.js
+//= require ./garmin/device/GarminDeviceControl.js
+//= require ./garmin/garmin_reader.js
