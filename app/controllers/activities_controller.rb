@@ -7,13 +7,17 @@ class ActivitiesController < ApplicationController
   end
   
   def create
-    @activity.new(new_activity_params)
-    if @activity.save
-      #success!  Do anything?
-    else
-      flash.now[:danger]="Error saving activity"
-      render 'new'
-    end  
+    respond_to do |format|
+      format.json do
+        @activity.new(new_activity_params)
+        if @activity.save
+          render json: {id: @activity.id, start_time: @activity.start_time, internal_id: params[:internal_id]}
+        else
+          #flash.now[:danger]="Error saving activity"
+          render json: {id: -1, internal_id: params[:internal_id]}
+        end
+      end
+    end
   end
   
   def destroy

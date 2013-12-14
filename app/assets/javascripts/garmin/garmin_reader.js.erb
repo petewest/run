@@ -1,3 +1,6 @@
+//this little bit of code allows root_path helpers to be used (for ajax queries)
+<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
 var $jq = jQuery.noConflict();
 //Have to use $jq alias to save me from decoupling Garmin API from prototype
 
@@ -202,8 +205,6 @@ GarminDeviceControlDemo.prototype = {
 							this.fileTypeRead = Garmin.DeviceControl.FILE_TYPES.crsDetail;
 						}
 
-						this._populateActivityQueue();
-
 						this._readSelectedActivities();
 
 						this.checkAllBox.disabled = false;
@@ -335,7 +336,8 @@ GarminDeviceControlDemo.prototype = {
 				case Garmin.DeviceControl.FILE_TYPES.crsDetail:
 
 					// Store this read activity
-					this.activities = this.activities.concat(this.factory.parseDocument(json.controller.gpsData));
+					//this.activities = this.activities.concat(this.factory.parseDocument(json.controller.gpsData));
+					this.uploadToServer(this.factory.parseDocument(json.controller.gpsData))
 
 					// Not finished with the activity queue
 					if (this.activityQueue.length > 0) {
@@ -360,8 +362,8 @@ GarminDeviceControlDemo.prototype = {
 					// List the activities (and display on Google Map)
 					if (this.activities != null) {
 						this.setStatus("Listing activities...");
-						var summary = this._listActivities(this.activities);
-						this.setStatus(new Template("Results: #{routes} routes, #{tracks} tracks and  #{waypoints} waypoints found").evaluate(summary));
+						//var summary = this._listActivities(this.activities);
+						//this.setStatus(new Template("Results: #{routes} routes, #{tracks} tracks and  #{waypoints} waypoints found").evaluate(summary));
 					} else {
 						this.setStatus("Finished retrieving data.");
 					}
@@ -408,30 +410,16 @@ GarminDeviceControlDemo.prototype = {
 	/** Reads the user-selected activities from the device by using the activity queue. 
 	 */
 	_readSelectedActivities: function() {
-		// Pop the selected activity off the queue.  (The queue only holds selected activities)
-		var currentActivity = this.activityQueue.last();
+		// Find the first item in the queue and process it
+		var currentActivity = this.activityQueue.shift();
 		this.garminController.readDetailFromDevice(this.fileTypeRead, $(currentActivity).value);
-		this.activityQueue.pop();
+	},
+	
+	uploadToServer: function(activity) {
+		//construct JSON for this activity
+		//post it to the server
 	},
 
-	_clearActivityListing: function() {
-		//clear previous data, if any (keep the header).  IE deletes header too...
-		while (this.activityListing.rows.length > 0) {
-			this.activityListing.deleteRow(0);
-		}
-	},
-
-	/** Creates the activity directory of all activities on the device
-	 * of the user-selected type.  Most recent entries are first.
-	 */
-	_createActivityDirectory: function() {
-		this.activityDirectory = new Array();
-		this.activityQueue = new Array(); // Initialized here so that we can detect activity selection read status
-		for (var jj = 0; jj < this.activities.length; jj++) {
-
-			this.activityDirectory[jj] = this.activities[jj].getAttribute("activityName");
-		}
-	},
 	display_activity_list: function() {
 		var new_activities = '';
 		//initialise our query queues
@@ -463,52 +451,46 @@ GarminDeviceControlDemo.prototype = {
 			if (!this.disabled) {
 				this.disabled=true;
 				controller.activityQueue.push(this.id);
-				alert("process data " + this.value + " for uploading");
+				//change file read mode to detail
+				controller.fileTypeRead = Garmin.DeviceControl.FILE_TYPES.tcxDetail;
+				controller._readSelectedActivities();
 			}
 		});
 	},
 	
+	
+	//this function takes a {start_date, internal_id} hash
+	//(where internal_id is checkbox id number)
+	//and queries the server for the upload status
+	_findUploadStatusForActivity: function(start_date_internal_id) {
+		//not sure if this is supported or not, but it seems to work
+		//set the controller variable here so we can use it in the anonymous
+		//callback function below
+		var controller=this;
+		$jq.getJSON('<%= activity_check_path %>',start_date_internal_id).done(function(json) {
+			var $upload_icon=$jq('#'+controller.upload_prefix+json.internal_id);
+			var $checkbox=$jq('#'+controller.checkbox_prefix+json.internal_id);
+			$upload_icon.removeClass(controller.upload_icon_unknown);
+			//if we get an id value of -1 it means we haven't uploaded this item yet
+			if (json.id!=-1){
+				$upload_icon.addClass(controller.upload_icon_success);
+				//tell the checkbox we've got it
+				$checkbox[0].checked=true;
+				//and disable it so we don't try again
+				//([0] makes it operate direct on the DOM object)
+				$checkbox[0].disabled=true;
+			} else {
+				$upload_icon.addClass(controller.upload_icon_no);
+				$checkbox[0].disabled=false;
+				$checkbox[0].checked=false;
+			}
+		});
+	},
 	// fires off requests to the DB to find out which items have been uploaded
 	_findUploadStatus: function() {
 		for (var i=0; i<this.queryUploadStatusQueue.length; i++) {
-			//fire off a JSON request for each item in the queue
-			var controller=this;
-			$jq.getJSON("/activity_check",this.queryUploadStatusQueue[i]).done(function(json) {
-				var $upload_icon=$jq('#'+controller.upload_prefix+json.internal_id);
-				var $checkbox=$jq('#'+controller.checkbox_prefix+json.internal_id);
-				$upload_icon.removeClass(controller.upload_icon_unknown);
-				//if we get an id value of -1 it means we haven't uploaded this item yet
-				if (json.id!=-1){
-					$upload_icon.addClass(controller.upload_icon_success);
-					//tell the checkbox we've got it
-					$checkbox[0].checked=true;
-					//and disable it so we don't try again
-					//([0] makes it operate direct on the DOM object)
-					$checkbox[0].disabled=true;
-				} else {
-					$upload_icon.addClass(controller.upload_icon_no);
-					$checkbox[0].disabled=false;
-					$checkbox[0].checked=false;
-				}
-			});
+			this._findUploadStatusForActivity(this.queryUploadStatusQueue[i]);
 		}
-	},
-
-	/** Creates the activity queue of selected activities.  This should be called
-	 * only after the user has finished selecting activities.  The queue
-	 * is an Array that is constructed and then reversed to simulate a queue.
-	 */
-	_populateActivityQueue: function() {
-
-		for (var jj = 0; jj < this.activityDirectory.length; jj++) {
-
-			if ($("activityItemCheckbox" + jj).checked == true) {
-				this.activityQueue.push("activityItemCheckbox" + jj);
-			}
-		}
-
-		// Reverse the array to turn it into a queue
-		this.activityQueue.reverse();
 	},
 
 	/** Selects all checkboxes in the activity directory, which selects all activities to be read from the device.
