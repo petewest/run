@@ -87,6 +87,7 @@
 <% content_for :jquery do%>
 <script type="text/javascript">
 //Trigger the find devices function when they document is ready
-	jQuery( document ).ready (find_garmin_devices);
+//switched to window load, otherwise it hadn't finished loading in the js file with the find garmin device definition :)
+	jQuery( window ).load (find_garmin_devices);
 </script>
 <%end %>
