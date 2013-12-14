@@ -29,6 +29,8 @@ GarminDeviceControlDemo.prototype = {
 		this.status = $(statusDiv);
 		this.factory = null;
 		this.keys = keysArray;
+		
+		this.$activity_table = $jq("#activityListing");
 
 		this.findDevicesButton = $("findDevicesButton");
 		this.cancelFindDevicesButton = $("cancelFindDevicesButton");
@@ -236,7 +238,10 @@ GarminDeviceControlDemo.prototype = {
 				controller: this
 			}, function(event) {
 				event.preventDefault();
-				event.data.controller.select_device($jq(this));
+				//check if we're the currently active device
+				if (!$jq(this).hasClass("active")) {
+					event.data.controller.select_device($jq(this));
+				}
 			});
 			$device_list.append($jq('<li>').append($new_link));
 		}
@@ -249,6 +254,8 @@ GarminDeviceControlDemo.prototype = {
 		$jq(".garmin_device").removeClass("active");
 		//and then add it back to this specific one
 		$dev.addClass("active");
+		//clear any existing activities
+		this.$activity_table.html('<tr><td colspan="3">Reading activities from device.</td></tr>');
 		//Tell the device ID which unit we're looking at:
 		this.garminController.setDeviceNumber(device.getNumber());
 		//Trigger a directory read of the device
@@ -417,7 +424,6 @@ GarminDeviceControlDemo.prototype = {
 		}
 	},
 	display_activity_list: function() {
-		var $activity_table = $jq("#activityListingHeader");
 		var new_activities = '';
 		for (var i = 0; i < this.activities.length; i++) {
 			var activity = this.activities[i];
@@ -425,7 +431,7 @@ GarminDeviceControlDemo.prototype = {
 			var description = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue().getDateString() + " (Duration: " + activity.getStartTime().getDurationTo(activity.getEndTime()) + ")";
 			new_activities += '<tr><td><input type="checkbox" class="activity_check" id="activity_check_' + i + '" value="' + name + '"/></td><td>\n' + description + '</td></tr>';
 		}
-		$activity_table.append(new_activities);
+		this.$activity_table.html(new_activities);
 		//Add event handlers to these items
 		$jq("input.activity_check").click({
 			controller: this
