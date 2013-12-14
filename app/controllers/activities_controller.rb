@@ -44,6 +44,17 @@ class ActivitiesController < ApplicationController
     end
   end
   
+  def check_upload
+    #check if the user has uploaded this activity already
+    @activity=current_user.activities.find_by_start_time(params[:start_time])
+    respond_to do |format|
+      format.json do
+        render json: {id: @activity.id} unless @activity.nil?
+        render json: {id: -1} if @activity.nil?
+      end
+    end
+  end
+  
   private
   def new_activity_params
     params.require(:activity).permit(:distance, :duration, :start_time, :height_gain, :polyline, :time_series, :elevation_series,

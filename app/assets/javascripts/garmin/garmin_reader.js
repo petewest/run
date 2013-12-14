@@ -31,6 +31,15 @@ GarminDeviceControlDemo.prototype = {
 		this.keys = keysArray;
 		
 		this.$activity_table = $jq("#activityListing");
+		this.checkbox_prefix = "activity_check_";
+		this.progress_prefix = "activity_progress_";
+		this.upload_prefix = "activity_upload_";
+		this.upload_icon_unknown = "glyphicon glyphicon-question-sign";
+		this.upload_icon_pending = "glyphicon glyphicon-transfer";
+		this.upload_icon_success = "glyphicon glyphicon-ok-sign";
+		this.upload_icon_error = "glyphicon glyphicon-warning-sign";
+		
+		this.queryUploadStatusQueue = null;
 
 		this.findDevicesButton = $("findDevicesButton");
 		this.cancelFindDevicesButton = $("cancelFindDevicesButton");
@@ -180,7 +189,6 @@ GarminDeviceControlDemo.prototype = {
 						this.readTracksSelect.length = 0;
 						this.readWaypointsSelect.length = 0;
 						this.readRoutesSelect.length = 0;
-						this.mc.map.clearOverlays();
 						this.fileTypeSelect.disabled = true;
 						this.readSelectedButton.disabled = true;
 						this.cancelReadDataButton.disabled = false;
@@ -255,7 +263,7 @@ GarminDeviceControlDemo.prototype = {
 		//and then add it back to this specific one
 		$dev.addClass("active");
 		//clear any existing activities
-		this.$activity_table.html('<tr><td colspan="3">Reading activities from device.</td></tr>');
+		this.$activity_table.html('<tr><td>Reading activities from device.</td></tr>');
 		//Tell the device ID which unit we're looking at:
 		this.garminController.setDeviceNumber(device.getNumber());
 		//Trigger a directory read of the device
@@ -425,20 +433,50 @@ GarminDeviceControlDemo.prototype = {
 	},
 	display_activity_list: function() {
 		var new_activities = '';
+		//initialise our query queues
+		if (this.queryUploadStatusQueue==null) {
+			this.queryUploadStatusQueue=new Array();
+		}
+		if (this.activityQueue==null) {
+			this.activityQueue = new Array();	
+		}
 		for (var i = 0; i < this.activities.length; i++) {
 			var activity = this.activities[i];
 			var name = activity.getAttribute("activityName");
 			var description = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue().getDateString() + " (Duration: " + activity.getStartTime().getDurationTo(activity.getEndTime()) + ")";
-			new_activities += '<tr><td><input type="checkbox" class="activity_check" id="activity_check_' + i + '" value="' + name + '"/></td><td>\n' + description + '</td></tr>';
+			//construct the HTML to output for this activity
+			new_activities += '<tr>\n<td><input type="checkbox" class="activity_check" id="'+ this.checkbox_prefix + i + '" value="' + name + '"/></td>\n';
+			new_activities += '<td id="'+this.progress_prefix+i+'">' + description + '</td>\n';
+			new_activities += '<td><span id="'+this.upload_prefix+i+'" class="'+this.upload_icon_unknown+'"></span></td>\n</tr>';
+			//add it to the query status queue, so we can find out if we've already uploaded this one
+			this.queryUploadStatusQueue.push(name);
 		}
 		this.$activity_table.html(new_activities);
+		this._findUploadStatus();
 		//Add event handlers to these items
 		$jq("input.activity_check").click({
 			controller: this
 		}, function(event) {
 			var controller = event.data.controller;
-			alert("process data " + this.value + " for uploading");
+			//check to see if we've already processed (or are processing) this item
+			if (!$jq(this).hasClass("disabled")) {
+				$jq(this).addClass("disabled");
+				controller.activityQueue.push(this.id);
+				alert("process data " + this.value + " for uploading");
+			}
 		});
+	},
+	
+	// fires off requests to the DB to find out which items have been uploaded
+	_findUploadStatus: function() {
+		for (var i=0; i<this.queryUploadStatusQueue.length; i++) {
+			//fire off a JSON request for each item in the queue
+			$jq.getJSON("/activity_check",{
+				start_time: this.queryUploadStatusQueue[i]
+			}).done(function(json) {
+				alert(json);
+			});
+		}
 	},
 
 	/** Creates the activity queue of selected activities.  This should be called
@@ -456,35 +494,6 @@ GarminDeviceControlDemo.prototype = {
 
 		// Reverse the array to turn it into a queue
 		this.activityQueue.reverse();
-	},
-
-	/** The activityListing object is the HTML table element on the demo page.  This function
-	 * adds the necessary row to the table with the activity data.
-	 */
-	_addToActivityListing: function(index, activity) {
-
-		var selectIndex = 0;
-		var nameIndex = 1;
-
-		var activityName = activity.getAttribute("activityName");
-
-		var row = this.activityListing.insertRow(this.activityListing.rows.length); // append a new row to the table
-		var selectCell = row.insertCell(selectIndex);
-		var nameCell = row.insertCell(nameIndex);
-
-		var checkbox = document.createElement("input");
-		checkbox.id = "activityItemCheckbox" + index;
-		checkbox.type = "checkbox";
-		checkbox.value = activityName;
-
-		selectCell.appendChild(checkbox);
-
-		if (this.fileTypeRead == Garmin.DeviceControl.FILE_TYPES.tcxDir) {
-			nameCell.innerHTML = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue().getDateString() + " (Duration: " + activity.getStartTime().getDurationTo(activity.getEndTime()) + ")"; // Correct time zone
-		} else if (this.fileTypeRead == Garmin.DeviceControl.FILE_TYPES.crsDir) {
-			nameCell.innerHTML = activityName;
-		}
-
 	},
 
 	/** Selects all checkboxes in the activity directory, which selects all activities to be read from the device.
