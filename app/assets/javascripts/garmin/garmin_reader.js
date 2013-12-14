@@ -228,7 +228,7 @@ GarminDeviceControlDemo.prototype = {
 		var $device_list = $jq("#list_of_devices");
 		for (var i = 0; i < devices.length; i++) {
 			var $new_link = $jq('<a>').attr({
-				class: 'garmin_device',
+				class: 'garmin_device btn btn-default btn-block',
 				href: '#'
 			}).append(devices[i].getDisplayName());
 			$new_link.data("device", devices[i]);
@@ -252,7 +252,8 @@ GarminDeviceControlDemo.prototype = {
 		//Tell the device ID which unit we're looking at:
 		this.garminController.setDeviceNumber(device.getNumber());
 		//Trigger a directory read of the device
-		//this.garminController.readDataFromDevice(Garmin.DeviceControl.FILE_TYPES.tcxDir);
+		this.fileTypeRead=Garmin.DeviceControl.FILE_TYPES.tcxDir
+		this.garminController.readDataFromDevice(Garmin.DeviceControl.FILE_TYPES.tcxDir);
 	},
 
 	onProgressReadFromDevice: function(json) {
@@ -706,7 +707,7 @@ GarminDeviceControlDemo.prototype = {
 var display;
 
 function find_garmin_devices() {
-	display = new GarminDeviceControlDemo("statusText", "readMap", []
-	//["http://run.petewest.org","a640806a0d1262ae4d2b43733773f3f0"]
+	display = new GarminDeviceControlDemo("statusText", "readMap",
+	["http://run.petewest.org","a640806a0d1262ae4d2b43733773f3f0"]
 	);
 }

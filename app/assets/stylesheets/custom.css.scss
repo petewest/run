@@ -244,10 +244,4 @@ input {
 
 #list_of_devices {
 	list-style:none;
-	a {
-		padding:5px;
-		&.active {
-			background-color:$gray-light;
-		}
-	}
 }

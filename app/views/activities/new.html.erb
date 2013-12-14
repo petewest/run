@@ -3,9 +3,9 @@
 <h1>Add new activity</h1>
 
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-3 col-sm-3">
 		Import from Garmin device
-		<ul id="list_of_devices">
+		<ul id="list_of_devices" class="nav">
 		</ul>
 		<div id="deviceBox">
 			<input type="button" value="Re-scan" id="findDevicesButton" disabled="true" />
@@ -86,6 +86,7 @@
 <% end %>
 <% content_for :jquery do%>
 <script type="text/javascript">
+//Trigger the find devices function when they document is ready
 	jQuery( document ).ready (find_garmin_devices);
 </script>
 <%end %>
