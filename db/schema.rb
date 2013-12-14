@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(version: 20131212213331) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "activities", force: true do |t|
     t.datetime "start_time"
     t.float    "distance"
@@ -30,7 +33,7 @@ ActiveRecord::Schema.define(version: 20131212213331) do
     t.datetime "updated_at"
   end
 
-  add_index "activities", ["user_id", "start_time"], name: "index_activities_on_user_id_and_start_time"
+  add_index "activities", ["user_id", "start_time"], name: "index_activities_on_user_id_and_start_time", using: :btree
 
   create_table "activity_types", force: true do |t|
     t.string   "name"
@@ -47,7 +50,7 @@ ActiveRecord::Schema.define(version: 20131212213331) do
     t.datetime "updated_at"
   end
 
-  add_index "categories", ["stub", "sort_order"], name: "index_categories_on_stub_and_sort_order", unique: true
+  add_index "categories", ["stub", "sort_order"], name: "index_categories_on_stub_and_sort_order", unique: true, using: :btree
 
   create_table "posts", force: true do |t|
     t.string   "title"
@@ -58,8 +61,8 @@ ActiveRecord::Schema.define(version: 20131212213331) do
     t.datetime "updated_at"
   end
 
-  add_index "posts", ["category_id"], name: "index_posts_on_category_id"
-  add_index "posts", ["user_id"], name: "index_posts_on_user_id"
+  add_index "posts", ["category_id"], name: "index_posts_on_category_id", using: :btree
+  add_index "posts", ["user_id"], name: "index_posts_on_user_id", using: :btree
 
   create_table "sessions", force: true do |t|
     t.string   "ip_addr"
@@ -70,8 +73,8 @@ ActiveRecord::Schema.define(version: 20131212213331) do
     t.datetime "updated_at"
   end
 
-  add_index "sessions", ["remember_token"], name: "index_sessions_on_remember_token", unique: true
-  add_index "sessions", ["user_id"], name: "index_sessions_on_user_id"
+  add_index "sessions", ["remember_token"], name: "index_sessions_on_remember_token", unique: true, using: :btree
+  add_index "sessions", ["user_id"], name: "index_sessions_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "name"
@@ -83,6 +86,6 @@ ActiveRecord::Schema.define(version: 20131212213331) do
     t.string   "password_digest"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
 end
