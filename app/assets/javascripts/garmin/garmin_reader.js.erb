@@ -57,8 +57,6 @@ GarminDeviceControlDemo.prototype = {
 		this.readRoutesSelect = $("readRoutesSelect");
 		this.readTracksSelect = $("readTracksSelect");
 		this.readWaypointsSelect = $("readWaypointsSelect");
-		this.dataString = $("dataString");
-		this.compressedDataString = $("compressedDataString");
 
 		this.progressBar = $("progressBar");
 		this.progressBarDisplay = $("progressBarDisplay");
@@ -290,8 +288,8 @@ GarminDeviceControlDemo.prototype = {
 			this.readDataButton.disabled = false;
 			this.cancelReadDataButton.disabled = true;
 			this.hideProgressBar();
-			this.dataString.value = json.controller.gpsDataString;
-			this.compressedDataString.value = json.controller.gpsDataStringCompressed;
+			//this.dataString.value = json.controller.gpsDataString;
+			//this.compressedDataString.value = json.controller.gpsDataStringCompressed;
 
 			// Factory setting for parsing the data into activities if applicable.
 			switch (this.fileTypeRead) {
@@ -338,7 +336,7 @@ GarminDeviceControlDemo.prototype = {
 
 					// Store this read activity
 					//this.activities = this.activities.concat(this.factory.parseDocument(json.controller.gpsData));
-					this.uploadToServer(this.factory.parseDocument(json.controller.gpsData), json.controller.gpsDataString)
+					this.uploadToServer(this.factory.parseDocument(json.controller.gpsData), json.controller.gpsDataStringCompressed)
 
 					// Not finished with the activity queue
 					if (this.activityQueue.length > 0) {
@@ -427,6 +425,11 @@ GarminDeviceControlDemo.prototype = {
 	for (i = 0; i < activities_up.length; i++) {
 		var activity = activities_up[i];
 		var series = activity.getSeries();
+		
+		var ascent_descent=getTotalAscentDescent(activity);
+		var time_series=getTimeSeries(activity);
+		
+		var lat_long_series=getLatLongSeries(activity);
 
 		// loop through each series in the activity
 		for (var j = 0; j < series.length; j++) {
@@ -438,7 +441,9 @@ GarminDeviceControlDemo.prototype = {
 			start_time: activity.getStartTime().getDate().toJSON(),
 			duration: activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalTime).getValue()/1000,
 			distance: activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalDistance).getValue(),
+			height_gain: ascent_descent[0],
 			gpx: gpsData,
+			time_series: time_series,
 			activity_type: activity.getAttribute("activitySport"),
 			internal_id: this.uploadPendingQueue[activity.getAttribute("activityName")]
 		};
@@ -461,7 +466,7 @@ GarminDeviceControlDemo.prototype = {
 		for (var i = 0; i < this.activities.length; i++) {
 			var activity = this.activities[i];
 			var name = activity.getAttribute("activityName");
-			var description = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue().getDateString() + " (Duration: " + activity.getStartTime().getDurationTo(activity.getEndTime()) + ")";
+			var description = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue().getDate().toLocaleDateString() + " (Duration: " + activity.getStartTime().getDurationTo(activity.getEndTime()) + ")";
 			//construct the HTML to output for this activity
 			new_activities += '<tr>\n<td><input type="checkbox" class="activity_check" disabled=true id="'+ this.checkbox_prefix + i + '" value="' + name + '"/></td>\n';
 			new_activities += '<td id="'+this.progress_prefix+i+'">' + description + '</td>\n';
@@ -752,6 +757,58 @@ GarminDeviceControlDemo.prototype = {
 		this.status.innerHTML = statusText;
 	}
 };
+
+function getTotalAscentDescent(activity) {
+	var series=activity.getHistorySeries();
+	var total=[0,0];
+	var lastVal=parseFloat(series.getSample(0).getMeasurementValue(Garmin.Sample.MEASUREMENT_KEYS.elevation));
+	for (var i=1;i<series.getSamplesLength();i++) {
+		var this_val=parseFloat(series.getSample(i).getMeasurementValue(Garmin.Sample.MEASUREMENT_KEYS.elevation));
+		//get height delta
+		var val=this_val-lastVal;
+		if (val>0) {
+			total[0]+=val;
+		} else if(val<0) {
+			total[1]+=-1*val;
+		}
+		lastVal=this_val;
+	}
+	return total;
+}
+function getTimeSeries(activity) {
+	var series=activity.getHistorySeries();
+	var series_array=[];
+	for (var i=0;i<series.getSamplesLength();i++) {
+		series_array.push(series.getSample(i).getTime().getDate().toJSON());
+	}
+	
+}
+
+function getHeartRateSeries(activity) {
+	var series=activity.getHistorySeries();
+	return getSeriesArray(series, Garmin.Sample.MEASUREMENT_KEYS.heartRate);
+}
+
+function getLatLongSeries(activity) {
+	var series=activity.getHistorySeries();
+	var lat_series=getSeriesArray(series, Garmin.Sample.MEASUREMENT_KEYS.latitude);
+	var long_series=getSeriesArray(series, Garmin.Sample.MEASUREMENT_KEYS.longitude);
+	var lat_long_series=[];
+	for (var i=0;i<lat_series.length;i++) {
+		lat_long_series[i]=[parseFloat(lat_series[i]),parseFloat(long_series[i])];
+	}
+	
+}
+
+function getSeriesArray(series, mode) {
+	var series_array=[];
+	for (var i=0;i<series.getSamplesLength();i++) {
+		series_array.push(series.getSample(i).getMeasurementValue(mode));
+	}
+	return series_array;
+}
+
+
 var display;
 
 function find_garmin_devices() {
