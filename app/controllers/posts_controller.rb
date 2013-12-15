@@ -1,4 +1,6 @@
 class PostsController < ApplicationController
+  
+  
   before_action :signed_in_user, only: [:create, :new]
   before_action :get_post_from_params, only: [:show]
   before_action :correct_user_or_admin, only: [:edit, :destroy, :update]
