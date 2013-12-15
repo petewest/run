@@ -430,6 +430,8 @@ GarminDeviceControlDemo.prototype = {
 		var time_series=getTimeSeries(activity);
 		
 		var lat_long_series=getLatLongSeries(activity);
+		
+		var heart_rate_series=getHeartRateSeries(activity);
 
 		// loop through each series in the activity
 		for (var j = 0; j < series.length; j++) {
@@ -443,7 +445,9 @@ GarminDeviceControlDemo.prototype = {
 			distance: activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalDistance).getValue(),
 			height_gain: ascent_descent[0],
 			gpx: gpsData,
-			time_series: time_series,
+			time_series: JSON.stringify(time_series),
+			lat_long_series: JSON.stringify(lat_long_series),
+			hr_series: JSON.stringify(heart_rate_series),
 			activity_type: activity.getAttribute("activitySport"),
 			internal_id: this.uploadPendingQueue[activity.getAttribute("activityName")]
 		};
@@ -781,23 +785,23 @@ function getTimeSeries(activity) {
 	for (var i=0;i<series.getSamplesLength();i++) {
 		series_array.push(series.getSample(i).getTime().getDate().toJSON());
 	}
-	
+	return series_array;
 }
 
 function getHeartRateSeries(activity) {
 	var series=activity.getHistorySeries();
-	return getSeriesArray(series, Garmin.Sample.MEASUREMENT_KEYS.heartRate);
+	return getSeriesArrayFloat(series, Garmin.Sample.MEASUREMENT_KEYS.heartRate);
 }
 
 function getLatLongSeries(activity) {
 	var series=activity.getHistorySeries();
-	var lat_series=getSeriesArray(series, Garmin.Sample.MEASUREMENT_KEYS.latitude);
-	var long_series=getSeriesArray(series, Garmin.Sample.MEASUREMENT_KEYS.longitude);
+	var lat_series=getSeriesArrayFloat(series, Garmin.Sample.MEASUREMENT_KEYS.latitude);
+	var long_series=getSeriesArrayFloat(series, Garmin.Sample.MEASUREMENT_KEYS.longitude);
 	var lat_long_series=[];
 	for (var i=0;i<lat_series.length;i++) {
-		lat_long_series[i]=[parseFloat(lat_series[i]),parseFloat(long_series[i])];
+		lat_long_series[i]=[lat_series[i],long_series[i]];
 	}
-	
+	return lat_long_series;
 }
 
 function getSeriesArray(series, mode) {
@@ -807,6 +811,15 @@ function getSeriesArray(series, mode) {
 	}
 	return series_array;
 }
+
+function getSeriesArrayFloat(series, mode) {
+	var series_array=[];
+	for (var i=0;i<series.getSamplesLength();i++) {
+		series_array.push(parseFloat(series.getSample(i).getMeasurementValue(mode)));
+	}
+	return series_array;
+}
+
 
 
 var display;

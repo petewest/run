@@ -10,14 +10,16 @@ class ActivitiesController < ApplicationController
     respond_to do |format|
       format.json do
         activity_type=ActivityType.find_by_identifier(params[:activity_type])
+        #time_series=JSON::parse(params[:time_series])
         #allow all the safe ones from new_activity_params, and add the activity id from the lookup
         constructed_params=new_activity_params.merge({activity_type_id: activity_type.id})
         @activity=current_user.activities.build(constructed_params)
+        #@activity.time_series=time_series
         if @activity.save
           render json: {id: @activity.id, start_time: @activity.start_time, internal_id: params[:internal_id]}
         else
           #flash.now[:danger]="Error saving activity"
-          render json: {id: -1, internal_id: params[:internal_id]}
+          render json: {id: -1, errors: @activity.errors.full_messages, internal_id: params[:internal_id]}
         end
       end
     end
@@ -65,8 +67,8 @@ class ActivitiesController < ApplicationController
   
   private
   def new_activity_params
-    params.permit(:distance, :duration, :start_time, :height_gain, :polyline, :time_series, :elevation_series,
-    :hr_series, :pace_series, :gpx)
+    params.permit(:distance, :duration, :start_time, :height_gain, :polyline, :elevation_series,
+    :hr_series, :pace_series, :gpx, :lat_long_series, :time_series)
   end
   def edit_activity_params
     params.require(:activity).permit(:activity_type_id)
