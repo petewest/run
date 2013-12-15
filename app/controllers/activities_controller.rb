@@ -65,6 +65,11 @@ class ActivitiesController < ApplicationController
     end
   end
   
+  #Only function on this controller that's open to everyone
+  def map
+    @activity=Activity.find(params[:id])
+  end
+  
   private
   def new_activity_params
     params.permit(:distance, :duration, :start_time, :height_gain, :polyline, :elevation_series,

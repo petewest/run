@@ -11,6 +11,7 @@ Run::Application.routes.draw do
     resources :sessions, only: [:index, :destroy]
     resources :activities, only: [:index]
   end
+    
   resources :sessions, only: [:new, :create, :destroy]
   root 'posts#index'
   
