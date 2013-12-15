@@ -1,5 +1,5 @@
 class ActivitiesController < ApplicationController
-  before_action :signed_in_user, only: [:new, :create, :index]
+  before_action :signed_in_user, only: [:new, :create, :index, :check_upload]
   before_action :correct_user_or_admin, only: [:destroy, :show, :edit, :update]
   
   def new
@@ -9,7 +9,10 @@ class ActivitiesController < ApplicationController
   def create
     respond_to do |format|
       format.json do
-        @activity.new(new_activity_params)
+        activity_type=ActivityType.find_by_identifier(params[:activity_type])
+        #allow all the safe ones from new_activity_params, and add the activity id from the lookup
+        constructed_params=new_activity_params.merge({activity_type_id: activity_type.id})
+        @activity=current_user.activities.build(constructed_params)
         if @activity.save
           render json: {id: @activity.id, start_time: @activity.start_time, internal_id: params[:internal_id]}
         else
@@ -62,8 +65,8 @@ class ActivitiesController < ApplicationController
   
   private
   def new_activity_params
-    params.require(:activity).permit(:distance, :duration, :start_time, :height_gain, :polyline, :time_series, :elevation_series,
-    :hr_series, :pace_series, :gpx, :activity_type_id, :user_id)
+    params.permit(:distance, :duration, :start_time, :height_gain, :polyline, :time_series, :elevation_series,
+    :hr_series, :pace_series, :gpx)
   end
   def edit_activity_params
     params.require(:activity).permit(:activity_type_id)

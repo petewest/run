@@ -38,9 +38,9 @@ GarminDeviceControlDemo.prototype = {
 		this.progress_prefix = "activity_progress_";
 		this.upload_prefix = "activity_upload_";
 		this.upload_icon_unknown = "glyphicon glyphicon-question-sign";
-		this.upload_icon_pending = "glyphicon glyphicon-transfer";
-		this.upload_icon_success = "glyphicon glyphicon-ok-sign";
-		this.upload_icon_error = "glyphicon glyphicon-warning-sign";
+		this.upload_icon_pending = "glyphicon glyphicon-transfer alert-information";
+		this.upload_icon_success = "glyphicon glyphicon-ok-sign alert-success";
+		this.upload_icon_error = "glyphicon glyphicon-warning-sign alert-danger";
 		this.upload_icon_no = "glyphicon glyphicon-record";
 		
 		this.queryUploadStatusQueue = null;
@@ -183,7 +183,7 @@ GarminDeviceControlDemo.prototype = {
 
 				}.bind(this)
 
-				this.readSelectedButton.disabled = true;
+			/*	this.readSelectedButton.disabled = true;
 				this.readSelectedButton.onclick = function() {
 
 					if (this._directoryHasSelected() == false) {
@@ -214,7 +214,7 @@ GarminDeviceControlDemo.prototype = {
 				this.checkAllBox.disabled = true;
 				this.checkAllBox.onclick = function() {
 					this._checkAllDirectory();
-				}.bind(this);
+				}.bind(this);*/
 
 				this.fileTypeSelect.onchange = function() {
 					this.fileTypeRead = this.fileTypeSelect.value;
@@ -244,13 +244,12 @@ GarminDeviceControlDemo.prototype = {
 				href: '#'
 			}).append(devices[i].getDisplayName());
 			$new_link.data("device", devices[i]);
-			$new_link.click({
-				controller: this
-			}, function(event) {
+			var controller=this;
+			$new_link.click(function(event) {
 				event.preventDefault();
 				//check if we're the currently active device
 				if (!$jq(this).hasClass("active")) {
-					event.data.controller.select_device($jq(this));
+					controller.select_device($jq(this));
 				}
 			});
 			$device_list.append($jq('<li>').append($new_link));
@@ -337,7 +336,7 @@ GarminDeviceControlDemo.prototype = {
 
 					// Store this read activity
 					//this.activities = this.activities.concat(this.factory.parseDocument(json.controller.gpsData));
-					this.uploadToServer(this.factory.parseDocument(json.controller.gpsData))
+					this.uploadToServer(this.factory.parseDocument(json.controller.gpsData), json.controller.gpsDataString)
 
 					// Not finished with the activity queue
 					if (this.activityQueue.length > 0) {
@@ -411,13 +410,42 @@ GarminDeviceControlDemo.prototype = {
 	 */
 	_readSelectedActivities: function() {
 		// Find the first item in the queue and process it
-		var currentActivity = this.activityQueue.shift();
-		this.garminController.readDetailFromDevice(this.fileTypeRead, $(currentActivity).value);
+		if (this.activityQueue.length>0) {
+			var currentActivity = this.activityQueue.shift();
+			this.garminController.readDetailFromDevice(this.fileTypeRead, $(currentActivity).value);
+		}
 	},
 	
-	uploadToServer: function(activity) {
-		//construct JSON for this activity
+	uploadToServer: function(activities_up, gpsData) {
+	//construct JSON for this activity
+	var json = {};
+	var controller = this;
+	for (i = 0; i < activities_up.length; i++) {
+		var activity = activities_up[i];
+		var series = activity.getSeries();
+
+		// loop through each series in the activity
+		for (var j = 0; j < series.length; j++) {
+			//currently does nothing, left here to remind me to work out totals
+		}
+		// activity contains a series of type history, list the track
+		var startDate=activity.getStartTime();
+		var endDate = activity.getEndTime();
+		json = {
+			start_time: activity.getStartTime().getDate().toJSON(),					
+			duration: startDate.getDurationTo(endDate),
+			gpx: gpsData,
+			activity_type: activity.getAttribute("activitySport")
+		};
 		//post it to the server
+		$jq.post('<%=activities_path%>', json, function(data, textStatus, jqXHR) {
+			//BIGSUCCESS!!
+			//update the view to show we've uploaded this and it's a success
+			}, "json");
+			break;
+	}
+
+
 	},
 
 	display_activity_list: function() {
@@ -450,6 +478,9 @@ GarminDeviceControlDemo.prototype = {
 			//check to see if we've already processed (or are processing) this item
 			if (!this.disabled) {
 				this.disabled=true;
+				//set the icon to pending
+				var $upload_icon=$jq(this.id.replace(controller.checkbox_prefix,controller.upload_prefix));
+				$upload_icon.removeClass().addClass(controller.upload_icon_pending);
 				controller.activityQueue.push(this.id);
 				//change file read mode to detail
 				controller.fileTypeRead = Garmin.DeviceControl.FILE_TYPES.tcxDetail;
