@@ -44,6 +44,7 @@ GarminDeviceControlDemo.prototype = {
 		this.upload_icon_no = "glyphicon glyphicon-record";
 		
 		this.queryUploadStatusQueue = null;
+		this.uploadPendingQueue={};
 
 		this.findDevicesButton = $("findDevicesButton");
 		this.cancelFindDevicesButton = $("cancelFindDevicesButton");
@@ -264,6 +265,7 @@ GarminDeviceControlDemo.prototype = {
 		//and then add it back to this specific one
 		$dev.addClass("active");
 		//clear any existing activities
+		this.activities=new Array();
 		this.$activity_table.html('<tr><td>Reading activities from device.</td></tr>');
 		//Tell the device ID which unit we're looking at:
 		this.garminController.setDeviceNumber(device.getNumber());
@@ -412,6 +414,8 @@ GarminDeviceControlDemo.prototype = {
 		// Find the first item in the queue and process it
 		if (this.activityQueue.length>0) {
 			var currentActivity = this.activityQueue.shift();
+			//add it to the upload pending queue
+			this.uploadPendingQueue[$(currentActivity).value]=$(currentActivity).id.replace(this.checkbox_prefix,'');
 			this.garminController.readDetailFromDevice(this.fileTypeRead, $(currentActivity).value);
 		}
 	},
@@ -428,19 +432,20 @@ GarminDeviceControlDemo.prototype = {
 		for (var j = 0; j < series.length; j++) {
 			//currently does nothing, left here to remind me to work out totals
 		}
-		// activity contains a series of type history, list the track
 		var startDate=activity.getStartTime();
 		var endDate = activity.getEndTime();
 		json = {
-			start_time: activity.getStartTime().getDate().toJSON(),					
-			duration: startDate.getDurationTo(endDate),
+			start_time: activity.getStartTime().getDate().toJSON(),
+			duration: activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalTime).getValue()/1000,
+			distance: activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalDistance).getValue(),
 			gpx: gpsData,
-			activity_type: activity.getAttribute("activitySport")
+			activity_type: activity.getAttribute("activitySport"),
+			internal_id: this.uploadPendingQueue[activity.getAttribute("activityName")]
 		};
 		//post it to the server
 		$jq.post('<%=activities_path%>', json, function(data, textStatus, jqXHR) {
-			//BIGSUCCESS!!
 			//update the view to show we've uploaded this and it's a success
+			controller.modify_upload_status_icon(data);
 			}, "json");
 			break;
 	}
@@ -451,12 +456,8 @@ GarminDeviceControlDemo.prototype = {
 	display_activity_list: function() {
 		var new_activities = '';
 		//initialise our query queues
-		if (this.queryUploadStatusQueue==null) {
-			this.queryUploadStatusQueue=new Array();
-		}
-		if (this.activityQueue==null) {
-			this.activityQueue = new Array();	
-		}
+		this.queryUploadStatusQueue=new Array();
+		this.activityQueue = new Array();	
 		for (var i = 0; i < this.activities.length; i++) {
 			var activity = this.activities[i];
 			var name = activity.getAttribute("activityName");
@@ -479,7 +480,7 @@ GarminDeviceControlDemo.prototype = {
 			if (!this.disabled) {
 				this.disabled=true;
 				//set the icon to pending
-				var $upload_icon=$jq(this.id.replace(controller.checkbox_prefix,controller.upload_prefix));
+				var $upload_icon=$jq("#"+this.id.replace(controller.checkbox_prefix,controller.upload_prefix));
 				$upload_icon.removeClass().addClass(controller.upload_icon_pending);
 				controller.activityQueue.push(this.id);
 				//change file read mode to detail
@@ -499,23 +500,27 @@ GarminDeviceControlDemo.prototype = {
 		//callback function below
 		var controller=this;
 		$jq.getJSON('<%= activity_check_path %>',start_date_internal_id).done(function(json) {
-			var $upload_icon=$jq('#'+controller.upload_prefix+json.internal_id);
-			var $checkbox=$jq('#'+controller.checkbox_prefix+json.internal_id);
-			$upload_icon.removeClass(controller.upload_icon_unknown);
-			//if we get an id value of -1 it means we haven't uploaded this item yet
-			if (json.id!=-1){
-				$upload_icon.addClass(controller.upload_icon_success);
-				//tell the checkbox we've got it
-				$checkbox[0].checked=true;
-				//and disable it so we don't try again
-				//([0] makes it operate direct on the DOM object)
-				$checkbox[0].disabled=true;
-			} else {
-				$upload_icon.addClass(controller.upload_icon_no);
-				$checkbox[0].disabled=false;
-				$checkbox[0].checked=false;
-			}
+			controller.modify_upload_status_icon(json);
 		});
+	},
+	
+	modify_upload_status_icon: function(json){
+		var $upload_icon=$jq('#'+this.upload_prefix+json.internal_id);
+		var $checkbox=$jq('#'+this.checkbox_prefix+json.internal_id);
+		$upload_icon.removeClass();
+		//if we get an id value of -1 it means we haven't uploaded this item yet
+		if (json.id!=-1){
+			$upload_icon.addClass(this.upload_icon_success);
+			//tell the checkbox we've got it
+			$checkbox[0].checked=true;
+			//and disable it so we don't try again
+			//([0] makes it operate direct on the DOM object)
+			$checkbox[0].disabled=true;
+		} else {
+			$upload_icon.addClass(this.upload_icon_no);
+			$checkbox[0].disabled=false;
+			$checkbox[0].checked=false;
+		}
 	},
 	// fires off requests to the DB to find out which items have been uploaded
 	_findUploadStatus: function() {

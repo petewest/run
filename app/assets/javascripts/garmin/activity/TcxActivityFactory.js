@@ -201,6 +201,8 @@ Garmin.TcxActivityFactory = {
 		// Grab the activity/course nodes, depending on document		
 		activityNodes = tcxDocument.getElementsByTagName(Garmin.TcxActivityFactory.SCHEMA_TAGS.activity);
 		
+		var totalDistance=0;
+		
 		// loop through all activities in the document
 		for (var i = 0; i < activityNodes.length; i++) {
 			
@@ -229,6 +231,9 @@ Garmin.TcxActivityFactory = {
 				// update the duration of this activity
 				var lapTotalTime = Garmin.TcxActivityFactory._tagValue(lapNodes[j], Garmin.TcxActivityFactory.SCHEMA_TAGS.lapTotalTime);
 				activityDurationMS += parseFloat(lapTotalTime + "e+3");
+				
+				var lapDistance = Garmin.TcxActivityFactory._tagValue(lapNodes[j], Garmin.TcxActivityFactory.SCHEMA_TAGS.lapDistance);
+				totalDistance+=parseFloat(lapDistance);
 				
 				/* not implemented until sections are in place
 				// create lap section
@@ -269,6 +274,8 @@ Garmin.TcxActivityFactory = {
 				activityEndTimeObj.date = new Date(activityStartTimeObj.getDate().getTime() + activityDurationMS);
 				activity.setSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime, activityStartTimeObj);
 				activity.setSummaryValue(Garmin.Activity.SUMMARY_KEYS.endTime, activityEndTimeObj);
+				activity.setSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalDistance, totalDistance);
+				activity.setSummaryValue(Garmin.Activity.SUMMARY_KEYS.totalTime,activityDurationMS)
 			}
 			
 			if (historySeries.getSamplesLength() > 0) {				
