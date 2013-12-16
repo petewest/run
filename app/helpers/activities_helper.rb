@@ -36,7 +36,7 @@ module ActivitiesHelper
     end
     opts=" "
     options.each {|k,v| opts+="#{k.to_s}='#{v}' " }
-    html=%Q{<div#{opts}id="map-canvas-#{id}" class="map-canvas">}
+    html=%Q{<div#{opts}id="map_canvas_#{id}" class="map_canvas">}
     html+=%Q{</div>}
   end
 

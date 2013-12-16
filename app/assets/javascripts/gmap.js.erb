@@ -18,7 +18,7 @@ function add_map($canvas) {
         //store this new map in the global array
         all_maps[canvas.id]=map;
         //find the id we're interested in
-        var activity_id=canvas.id.replace("map-canvas-","");
+        var activity_id=canvas.id.replace("map_canvas_","");
 	//fire off a query to get the path info
         jQuery.getJSON('<%= map_path %>', {id: activity_id}).done(function(data) {
                add_to_map(data.polyline, canvas);
@@ -46,6 +46,7 @@ function get_bounds(polyline) {
     b.extend(path.getAt(i[0]));
     b.extend(path.getAt(i[1]));
     b.extend(path.getAt(i[2]));
+	b.extend(path.getAt(length-1));
     return b;
 }
 

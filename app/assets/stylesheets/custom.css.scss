@@ -37,13 +37,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 3em;
   margin-bottom: 30px;
   text-align: left;
 }
 
 h2 {
-  font-size: 1.2em;
   margin-bottom: 10px;
   text-align: left;
   font-weight: normal;
@@ -246,7 +244,16 @@ input {
 	list-style:none;
 }
 
-.map-canvas {
+.activity_map {
+	border:1px solid $gray-light;
+	margin:2px;
+	padding:2px;
+}
+
+.map_caption {
+	@include de_emphasise;
+}
+.map_canvas {
    width: 400px;
    height: 250px;
 }
