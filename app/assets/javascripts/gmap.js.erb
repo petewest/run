@@ -12,15 +12,16 @@ function add_map($canvas) {
           zoom: 8
         };
    $canvas.each(function(index) {
-        var map = new google.maps.Map(this,
+        var canvas=this;
+        var map = new google.maps.Map(canvas,
         map_options);
         //store this new map in the global array
-        all_maps[this.id]=map;
+        all_maps[canvas.id]=map;
         //find the id we're interested in
-        var activity_id=this.id.replace("map-canvas-","");
+        var activity_id=canvas.id.replace("map-canvas-","");
 	//fire off a query to get the path info
-        jQuery.getJSON('<%= map_path %>'+id, {}, function(data) {
-               add_to_map(data.polyline, this);
+        jQuery.getJSON('<%= map_path %>', {id: activity_id}).done(function(data) {
+               add_to_map(data.polyline, canvas);
            });
       });
 }
@@ -33,9 +34,19 @@ function add_to_map(line, canvas) {
         strokeWeight: 5
     };
     track_path=new google.maps.Polyline(path_options);
-    track_path.setMap(all_maps[this.id]);
+    track_path.setMap(all_maps[canvas.id]);
+    all_maps[canvas.id].fitBounds(get_bounds(track_path));
 }
 
-
+function get_bounds(polyline) {
+    var b=new google.maps.LatLngBounds();
+    var path=polyline.getPath();
+    var length=path.getLength();
+    var i=[0,(length/3).toFixed(0), (length/3).toFixed(0)*2];
+    b.extend(path.getAt(i[0]));
+    b.extend(path.getAt(i[1]));
+    b.extend(path.getAt(i[2]));
+    return b;
+}
 
 

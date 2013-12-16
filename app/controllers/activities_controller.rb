@@ -14,7 +14,7 @@ class ActivitiesController < ApplicationController
     end
     respond_to do |format|
       format.json do
-        render json: @activity, only: [:id, :poly_line]
+        render json: @activity, only: [:id, :polyline]
       end
     end
   end
