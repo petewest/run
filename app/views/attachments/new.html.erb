@@ -1,5 +1,19 @@
 <% provide(:title, "New attachment")%>
 
-<% form_for @attachment do %>
+
+<div class="row">
+	<div class="col-md-12">
+
+<%= form_for(@attachment) do |f| %>
+
+<% render 'shared/error_messages', object: f.object %>
+
+
+	<%= f.label :file %>
+	<%= f.file_field :file %>
 	
+<%= f.submit "Submit" %>	
+</div>
+</div>
+
 <% end %>

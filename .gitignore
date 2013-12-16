@@ -15,6 +15,9 @@
 /log/*.log
 /tmp
 
+#Ignore all attachments added by paperclip
+/public/system
+
 database.yml
 *~
 .secret
