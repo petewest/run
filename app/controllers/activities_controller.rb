@@ -1,9 +1,22 @@
 class ActivitiesController < ApplicationController
   before_action :signed_in_user, only: [:new, :create, :index, :check_upload]
-  before_action :correct_user_or_admin, only: [:destroy, :show, :edit, :update]
+  before_action :correct_user_or_admin, only: [:destroy, :edit, :update]
   
   def new
     @activity=Activity.new
+  end
+
+  def show
+    begin
+      @activity=Activity.find(params[:id]);
+    rescue ActiveRecord::RecordNotFound => e
+      return
+    end
+    respond_to do |format|
+      format.json do
+        render json: @activity, only: [:id, :poly_line]
+      end
+    end
   end
   
   def create
@@ -29,9 +42,6 @@ class ActivitiesController < ApplicationController
     @activity.destroy
     flash[:success]="Activity deleted"
     redirect_to root_url
-  end
-  
-  def show
   end
   
   def edit

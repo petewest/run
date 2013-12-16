@@ -1,0 +1,41 @@
+//this little bit of code allows root_path helpers to be used (for ajax queries)
+<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+
+
+var all_maps={};
+
+function add_map($canvas) {
+   //add map to jquery object(s)
+   var map_options= {
+          center: new google.maps.LatLng(-34.397, 150.644),
+          zoom: 8
+        };
+   $canvas.each(function(index) {
+        var map = new google.maps.Map(this,
+        map_options);
+        //store this new map in the global array
+        all_maps[this.id]=map;
+        //find the id we're interested in
+        var activity_id=this.id.replace("map-canvas-","");
+	//fire off a query to get the path info
+        jQuery.getJSON('<%= map_path %>'+id, {}, function(data) {
+               add_to_map(data.polyline, this);
+           });
+      });
+}
+function add_to_map(line, canvas) {
+    decoded_path=google.maps.geometry.encoding.decodePath(line);
+    path_options={
+        path: decoded_path,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.5,
+        strokeWeight: 5
+    };
+    track_path=new google.maps.Polyline(path_options);
+    track_path.setMap(all_maps[this.id]);
+}
+
+
+
+

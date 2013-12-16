@@ -17,6 +17,7 @@ Run::Application.routes.draw do
   
   match '/feed', to: 'posts#index', via: 'get', defaults: {format: 'rss'}
   match '/activity_check', to: 'activities#check_upload', via: 'get', defaults: {format: 'json'}
+  match '/map', to: 'activities#show', via: 'get', defaults: {format: 'json'}, as: 'map'
 
   # Test having category routes available:
   # this should probably be the last route?
