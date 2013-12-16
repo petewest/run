@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131215174457) do
+ActiveRecord::Schema.define(version: 20131216215301) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "activities", force: true do |t|
     t.datetime "start_time"
@@ -38,6 +41,16 @@ ActiveRecord::Schema.define(version: 20131215174457) do
     t.string   "identifier"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "attachments", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
   end
 
   create_table "categories", force: true do |t|
