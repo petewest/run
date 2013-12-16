@@ -3,4 +3,6 @@ class Attachment < ActiveRecord::Base
     medium:"300x300>",
     large:"600x600>"
   }
+  
+  belongs_to :user
 end
