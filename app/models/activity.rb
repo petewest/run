@@ -9,6 +9,6 @@ class Activity < ActiveRecord::Base
   
   private
   def create_polyline
-    self.polyline=Polylines::Encoder.encode_points(JSON::parse(self.lat_long_series).select {|x| x!=[nil,nil] })
+    self.polyline=Polylines::Encoder.encode_points(JSON::parse(lat_long_series).select {|x| x!=[nil,nil] }) if lat_long_series
   end
 end

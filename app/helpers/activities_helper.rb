@@ -9,7 +9,7 @@ module ActivitiesHelper
     rescue ActiveRecord::RecordNotFound => e
       return
     end
-    url="http://maps.googleapis.com/maps/api/staticmap?visual_refresh=true&maptype=terrain&size=600x400&path=weight:3%7Ccolor:red%7Cenc:#{activity.polyline}&sensor=false"
+    url="//maps.googleapis.com/maps/api/staticmap?visual_refresh=true&maptype=terrain&size=600x400&path=weight:3%7Ccolor:red%7Cenc:#{activity.polyline}&sensor=false"
     opts=" "
     options.each {|k,v| opts+="#{k.to_s}='#{v}' " }
     %Q{<img#{opts}src="#{url}" />}
