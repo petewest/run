@@ -2,9 +2,13 @@ module RedclothExtensions
   include ActivitiesHelper
   include AttachmentsHelper
   
+  def match_format
+    /\A(?<static>[s]?)(?<align>(&gt;|&lt;|\|)?)\s*(?<id>\d+)\s*(?<caption>.*)/
+  end
+
   def map(opts)
-    args=/\A(?<static>[s]?)(?<align>(&gt;|&lt;|\|)?)\s*(?<id>\d+)\s*(?<caption>.*)/.match(opts[:text])
-    return "" if args.nil?
+    args=match_format.match(opts[:text])
+    return opts[:text] if args.nil?
     css="activity_map"
     css+=case args[:align]
       when "|" then " center"
@@ -18,8 +22,8 @@ module RedclothExtensions
   end
   
   def img(opts)
-    args=/\A(?<static>[s]?)(?<align>(&gt;|&lt;|\|)?)\s*(?<id>\d+)\s*(?<caption>.*)/.match(opts[:text])
-    return "" if args.nil?
+    args=match_format.match(opts[:text])
+    return opts[:text] if args.nil?
     css="post_image"
     css+=case args[:align]
       when "|" then " center"
