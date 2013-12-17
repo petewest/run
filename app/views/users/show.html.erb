@@ -1,4 +1,5 @@
 <% provide(:title, @user.name)%>
+<% units="m" %>
 
 <div class="row">
 	<div class="col-md-3">
@@ -16,8 +17,8 @@
 			<div class="summary">
 				Summary:
 				<ul>
-					<li><abbr title="Total distance"><span class="glyphicon glyphicon-resize-horizontal"></span></abbr> 10km</li>
-					<li><abbr title="Total time"><span class="glyphicon glyphicon-time"></span></abbr> 10 hours</li>
+					<li><abbr title="Total distance"><span class="glyphicon glyphicon-resize-horizontal"></span></abbr> <%= number_to_human(@user.activities.sum(:distance), units: :distance) %></li>
+					<li><abbr title="Total time"><span class="glyphicon glyphicon-time"></span></abbr> <%= distance_of_time_in_words(@user.activities.sum(:duration).seconds) %></li>
 				</ul>
 			</div>
 		</div>
