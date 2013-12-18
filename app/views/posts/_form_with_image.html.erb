@@ -25,35 +25,6 @@
 			</div>
 		</div>
 	</div>
-<% content_for :js_includes do %>
-<%= javascript_include_tag "new_post" %>
-<%= javascript_include_tag "file_upload" %>
-<% end %>
-
-<% content_for :jquery do %>
-
-<script type="text/javascript">
-var $jq=jQuery
-
-jQuery(add_images_to_dropdown($jq("#image_list")));
-jQuery(function () {
-	$jq('#fileupload').fileupload({
-		dataType: 'json',
-		done: function(e, response) {
-			if (response.result.id>=0) {
-				//refresh the image list
-				list_image($jq("#image_list"), response.result, false);
-				//set the background of the image button to success
-				$jq('#show_images').removeClass("btn-danger");
-				$jq('#show_images').addClass("btn-success");
-			} else {
-				$jq('#show_images').addClass("btn-danger");
-			}
-		}
-	});
-});
-</script>
-<% end %>
 	<%= form_for(@post) do |f| %>
 
 	<div class="col-md-8">
@@ -91,4 +62,39 @@ jQuery(function () {
 </div>
 
 	<%= f.submit class: "btn btn-large btn-primary" %>
+<% end %>
+
+<% content_for :js_includes do %>
+<%= javascript_include_tag "new_post" %>
+<%= javascript_include_tag "file_upload" %>
+<% end %>
+
+<% content_for :jquery do %>
+
+<script type="text/javascript">
+var $jq=jQuery
+
+function reset_image_button_class() {
+	$jq('#show_images')[0].className="btn btn-default dropdown-toggle";
+}
+
+jQuery(add_images_to_dropdown($jq("#image_list")));
+jQuery(function () {
+	$jq('#fileupload').fileupload({
+		dataType: 'json',
+		done: function(e, response) {
+			if (response.result.id>=0) {
+				//refresh the image list
+				list_image($jq("#image_list"), response.result, false);
+				//set the background of the image button to success
+				$jq('#show_images').removeClass("btn-danger");
+				$jq('#show_images').addClass("btn-success");
+			} else {
+				$jq('#show_images').addClass("btn-danger");
+			}
+			window.setTimeout(reset_image_button_class,5000);
+		}
+	});
+});
+</script>
 <% end %>
