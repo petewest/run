@@ -27,8 +27,16 @@ class PostsController < ApplicationController
   def create
     @post=current_user.posts.create(post_params)
     if @post.save
-      flash[:success]="Post created!"
-      redirect_to @post
+      if @post.draft
+        #if it's a draft we don't want to de-activate the controls
+        flash.now[:success]="Draft saved"
+        #so we'll use the 'new' render, as this just refreshes error
+        #and flash messages
+        render 'new'
+      else
+        flash[:success]="Post created!"
+        redirect_to @post
+      end
     else
       flash.now[:danger]="Error creating post"
       render 'new'
@@ -43,8 +51,16 @@ class PostsController < ApplicationController
   
   def update
     if @post.update_attributes(post_params)
-      flash[:success]="Post successfully updated"
-      redirect_to @post
+      if @post.draft
+        #if it's a draft we don't want to de-activate the controls
+        flash.now[:success]="Draft saved"
+        #so we'll use the 'new' render, as this just refreshes error
+        #and flash messages
+        render 'new'
+      else
+        flash[:success]="Post successfully updated"
+        redirect_to @post
+      end
     else
       flash.now[:danger]="Edit post failed"
       render 'edit'
@@ -61,7 +77,7 @@ class PostsController < ApplicationController
     @post=Post.find(params[:id])
   end
   def post_params
-    params.require(:post).permit(:title, :write_up, :category_id)
+    params.require(:post).permit(:title, :write_up, :category_id, :draft)
   end
   def correct_user_or_admin
     if current_user.admin?
