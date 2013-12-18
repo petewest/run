@@ -14,6 +14,9 @@ Run::Application.routes.draw do
     
   resources :sessions, only: [:new, :create, :destroy]
   resources :attachments, only: [:new, :create, :destroy]
+  resources :attachments, only: [:index], defaults: {format: 'json'}
+  
+  
   root 'posts#index'
   
   match '/feed', to: 'posts#index', via: 'get', defaults: {format: 'rss'}
