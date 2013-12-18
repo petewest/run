@@ -1,0 +1,6 @@
+<div class="write_up">
+	<% r=RedCloth.new(write_up, [:sanitize_html])
+	r.extend RedclothExtensions
+	%>
+	<%=r.to_html.html_safe%>
+</div>
