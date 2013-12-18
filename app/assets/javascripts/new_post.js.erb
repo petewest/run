@@ -115,10 +115,10 @@ function add_new_post_button_handlers() {
 	});
 	
 	$jq('#post_draft_button').click(function(event){
-		$jq('#post_draft').val(true);
+		$jq('#post_draft').val("true");
 	});
 	$jq('#post_save_button').click(function(event){
-		$jq('#post_draft').val(false);
+		$jq('#post_draft').val("false");
 	});
 }
 

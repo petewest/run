@@ -7,9 +7,9 @@ class PostsController < ApplicationController
 
   def index
     if current_category
-      @posts=current_category.posts.includes(:user).paginate(page: params[:page])
+      @posts=current_category.posts.where(draft: false).includes(:user).page(params[:page])
     else
-      @posts=Post.includes(:user).paginate(page: params[:page])
+      @posts=Post.where(draft:false).includes(:user).page(params[:page])
     end
     respond_to do |format|
       format.html
@@ -26,6 +26,7 @@ class PostsController < ApplicationController
   
   def create
     @post=current_user.posts.create(post_params)
+    @post.draft=(params[:commit]=="Save as draft") #the jquery click event isn't setting the flag reliably, so force it here
     if @post.save
       if @post.draft
         #if it's a draft we don't want to de-activate the controls
@@ -51,6 +52,7 @@ class PostsController < ApplicationController
   
   def update
     if @post.update_attributes(post_params)
+      @post.draft=(params[:commit]=="Save as draft") #the jquery click event isn't setting the flag reliably, so force it here
       if @post.draft
         #if it's a draft we don't want to de-activate the controls
         flash.now[:success]="Draft saved"
