@@ -43,6 +43,13 @@
 		</div>
 	<%= f.label :write_up %>
 	<%= f.text_area :write_up, rows: "20", class: "form-control form-writeup", id: "write_up_input" %>
+
+	<div class="btn-group">
+		<%= f.submit class: "btn btn-large btn-primary", id: 'post_save_button' %>
+		<button type="button" class="btn btn-large btn-default" id="post_preview">Preview</button>
+		<%= f.submit 'Save as draft', id: 'post_draft_button', class: "btn btn-large btn-default" %>
+	</div>
+	<% end %>
 	<p class="help-block">You can use <a href="http://redcloth.org/textile" target="_blank">Textile</a> formatting above to make your post pretty</p>
 	<p class="help-block">The following additional tags have been added:
 		<ul>
@@ -56,13 +63,6 @@
 		Use the dropdown boxes at the top right of the page to select items and add the ids to the write up
 	</p>
 </div>
-
-<div class="btn-group">
-	<%= f.submit class: "btn btn-large btn-primary", id: 'post_save_button' %>
-	<button type="button" class="btn btn-large btn-default" id="post_preview">Preview</button>
-	<%= f.submit 'Save as draft', id: 'post_draft_button', class: "btn btn-large btn-default" %>
-</div>
-<% end %>
 
 <div class="write_up write_up_preview" style="display:none;" id="write_up_preview">
 </div>
