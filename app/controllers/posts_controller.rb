@@ -1,7 +1,5 @@
 class PostsController < ApplicationController
-  
-  
-  before_action :signed_in_user, only: [:create, :new]
+  before_action :signed_in_user, only: [:create, :new, :preview]
   before_action :get_post_from_params, only: [:show]
   before_action :correct_user_or_admin, only: [:edit, :destroy, :update]
   def edit
@@ -51,6 +49,11 @@ class PostsController < ApplicationController
       flash.now[:danger]="Edit post failed"
       render 'edit'
     end
+  end
+  
+  def preview
+    #We only need the partial here, as it's an ajax request to a div
+    render partial: 'shared/write_up', locals: {write_up: params[:write_up]}, layout: false
   end
   
   private

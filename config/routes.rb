@@ -19,7 +19,9 @@ Run::Application.routes.draw do
   
   root 'posts#index'
   
+  match '/preview', to: 'posts#preview', via: 'post', as: 'post_preview'
   match '/feed', to: 'posts#index', via: 'get', defaults: {format: 'rss'}
+
   match '/activity_check', to: 'activities#check_upload', via: 'get', defaults: {format: 'json'}
   match '/map', to: 'activities#show', via: 'get', defaults: {format: 'json'}, as: 'map'
 

@@ -1,3 +1,5 @@
+//= require file_upload
+
 //this little bit of code allows root_path helpers to be used (for ajax queries)
 <% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
@@ -33,6 +35,18 @@ function add_images_to_dropdown($image_list) {
 		});
 	});
 }
+
+function add_progress_bar($bar_container, filename) {
+	var safe_name=filename.replace('.','_')
+	html='<div class="progress">'
+	html+='<div class="progress-bar progress-bar-success" style="width: 0%;" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-value-max="100" id="progress_bar_'+safe_name+'">'
+	html+='<span id="progress_text_'+safe_name+'">'+filename+' uploading...</span>'
+	html+='</div>'
+	html+='</div>'
+	$bar_container.append(html);
+	return $jq("#progress_bar_"+safe_name);
+}
+
 function list_image($control, json, append){
 	//add the image to the control
 	if (append) {
@@ -52,6 +66,56 @@ function list_image($control, json, append){
 		var content=$write_up.val();
 		var new_content=content.substr(0, pos) + "\n\nimg. " + json.id + "\n\n" + content.substr(pos);
 		$write_up.val(new_content);
+	});
+}
+
+function add_new_post_button_handlers() {
+	$jq('#fileupload').fileupload({
+		dataType: 'json',
+		add: function(e, data) {
+			//clear the bar container
+			$jq("#bar_container").html("");
+			//add a progress bar for each upload
+			$jq.each(data.files,function(index, file) {
+				add_progress_bar($jq("#bar_container"),file.name);
+			});
+			data.submit();
+		},
+		progress: function (e, data) {
+			var progress = parseInt(data.loaded / data.total * 100, 10);
+			$jq.each(data.files, function(index, file) {
+				var safe_name=file.name.replace('.','_');
+				$jq("#progress_bar_"+safe_name).css('width',progress + '%');
+				$jq('#progress_text_'+safe_name).html("Uploading "+file.name+": "+ progress +"% complete");
+			});
+		},
+		done: function(e, response) {
+			if (response.result.id>=0) {
+				//refresh the image list
+				list_image($jq("#image_list"), response.result, false);
+				//set the background of the image button to success
+				$jq('#show_images').removeClass("btn-danger");
+				$jq('#show_images').addClass("btn-success");
+			} else {
+				$jq('#show_images').addClass("btn-danger");
+			}
+			window.setTimeout(reset_image_button_class,5000);
+		}
+	});
+	
+	$jq('#post_preview').click(function(event){
+		var $control=$jq('#write_up_input');
+		var write_up=$control[0].value;
+		var json={write_up: write_up};
+		$jq.post('<%= post_preview_path %>',json, function(response){
+			var $preview=$jq('#write_up_preview');
+			$preview.html(response);
+			$preview.show();
+		},'html');
+	});
+	
+	$jq('#post_draft').click(function(event){
+		
 	});
 }
 
