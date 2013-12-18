@@ -2,13 +2,10 @@
 	<div class="col-md-4 pull-right">
 		<div class="row">
 		<%= form_for(Attachment.new) do |f| %>
-
-			<%= render 'shared/error_messages', object: f.object %>
 		
 			<%= f.label :file, "Image upload" %>
-			<%= f.file_field :file, class: "file_upload" %>
+			<%= f.file_field :file, class: "file_upload", id: "fileupload" %>
 
-		<%= f.submit "Upload", class: "btn btn-sm btn-default", id:"upload_image_button" %>
 		<% end%>
 		</div>
 		<div class="row">
@@ -28,86 +25,33 @@
 			</div>
 		</div>
 	</div>
+<% content_for :js_includes do %>
+<%= javascript_include_tag "new_post" %>
+<%= javascript_include_tag "file_upload" %>
+<% end %>
+
 <% content_for :jquery do %>
+
 <script type="text/javascript">
-//shamlessly stolen from stackoverflow to find current cursor position
-(function ($, undefined) {
-    $.fn.getCursorPosition = function () {
-        var el = $(this).get(0);
-        var pos = 0;
-        if ('selectionStart' in el) {
-            pos = el.selectionStart;
-        } else if ('selection' in document) {
-            el.focus();
-            var Sel = document.selection.createRange();
-            var SelLength = document.selection.createRange().text.length;
-            Sel.moveStart('character', -el.value.length);
-            pos = Sel.text.length - SelLength;
-        }
-        return pos;
-    }
-})(jQuery);
+var $jq=jQuery
 
-var $jq=jQuery;
-
-function add_images_to_dropdown($image_list) {
-	//clear the existing list
-	$image_list.html("");
-	//by default attachments path lists the most recent 20 items
-	$jq.get('<%= attachments_path %>',function(json){
-		//process result
-		$jq.each(json, function(index, value){
-			list_image($image_list, value);
-		});
-	});
-}
-function list_image($control, json){
-	//add the image to the control
-	$control.append(
-		"<li><a href='#' id='image_"+json.id+"' class='image_item'><img src='"+json.file_url_thumb+"' />"+json.file_file_name+"</a></li>"
-	);
-	$jq("#image_"+json.id).click(function(event) {
-		event.preventDefault();
-		//insert to write up div here
-		var $write_up=$jq('#write_up_input');
-		var pos=$write_up.getCursorPosition();
-		var content=$write_up.val();
-		var new_content=content.substr(0, pos) + "\n\nimg. " + json.id + "\n\n" + content.substr(pos);
-		$write_up.val(new_content);
-	});
-}
-
-function add_post_click_handlers() {
-	$jq("#upload_image_button").click(function(event){
-		event.preventDefault();
-		var $image_form=$jq("#new_attachment");
-		//so... can't serialize a file input field.  bums
-		var data=JSON.stringify($image_form.serializeArray());
-		$jq.post($image_form[0].action,data,null,'json')
-			.done(function(response) {
-				if (response.id>=0) {
-					//refresh the image list
-					list_image($jq("#image_list"), response);
-					//set the background of the image button to success
-					$jq('#show_images').removeClass("btn-danger");
-					$jq('#show_images').addClass("btn-success");
-				} else {
-					$jq('#show_images').addClass("btn-danger");
-				}
-			})
-			.fail(function(response){
+jQuery(add_images_to_dropdown($jq("#image_list")));
+jQuery(function () {
+	$jq('#fileupload').fileupload({
+		dataType: 'json',
+		done: function(e, response) {
+			if (response.result.id>=0) {
+				//refresh the image list
+				list_image($jq("#image_list"), response.result, false);
+				//set the background of the image button to success
+				$jq('#show_images').removeClass("btn-danger");
+				$jq('#show_images').addClass("btn-success");
+			} else {
 				$jq('#show_images').addClass("btn-danger");
-			})
-			.always(function(){
-				//add a timer to reset the button colour
-			})
-		;
+			}
+		}
 	});
-}
-
-
- jQuery(add_images_to_dropdown($jq("#image_list")));
- jQuery(add_post_click_handlers());
+});
 </script>
 <% end %>
 	<%= form_for(@post) do |f| %>

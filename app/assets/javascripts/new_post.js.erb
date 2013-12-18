@@ -1,0 +1,57 @@
+//this little bit of code allows root_path helpers to be used (for ajax queries)
+<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+
+//shamlessly stolen from stackoverflow to find current cursor position
+(function ($, undefined) {
+    $.fn.getCursorPosition = function () {
+        var el = $(this).get(0);
+        var pos = 0;
+        if ('selectionStart' in el) {
+            pos = el.selectionStart;
+        } else if ('selection' in document) {
+            el.focus();
+            var Sel = document.selection.createRange();
+            var SelLength = document.selection.createRange().text.length;
+            Sel.moveStart('character', -el.value.length);
+            pos = Sel.text.length - SelLength;
+        }
+        return pos;
+    }
+})(jQuery);
+
+var $jq=jQuery;
+
+function add_images_to_dropdown($image_list) {
+	//clear the existing list
+	$image_list.html("");
+	//by default attachments path lists the most recent 20 items
+	$jq.get('<%= attachments_path %>',function(json){
+		//process result
+		$jq.each(json, function(index, value){
+			list_image($image_list, value, true);
+		});
+	});
+}
+function list_image($control, json, append){
+	//add the image to the control
+	if (append) {
+		$control.append(
+			"<li><a href='#' id='image_"+json.id+"' class='image_item'><img src='"+json.file_url_thumb+"' />"+json.file_file_name+"</a></li>"
+		);
+	} else {
+		$control.prepend(
+			"<li><a href='#' id='image_"+json.id+"' class='image_item'><img src='"+json.file_url_thumb+"' />"+json.file_file_name+"</a></li>"
+		);
+	}
+	$jq("#image_"+json.id).click(function(event) {
+		event.preventDefault();
+		//insert to write up div here
+		var $write_up=$jq('#write_up_input');
+		var pos=$write_up.getCursorPosition();
+		var content=$write_up.val();
+		var new_content=content.substr(0, pos) + "\n\nimg. " + json.id + "\n\n" + content.substr(pos);
+		$write_up.val(new_content);
+	});
+}
+
