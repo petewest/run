@@ -94,10 +94,10 @@ function add_new_post_button_handlers() {
 				//refresh the image list
 				list_image($jq("#image_list"), response.result, false);
 				//set the background of the image button to success
-				$jq('#show_images').removeClass("btn-danger");
-				$jq('#show_images').addClass("btn-success");
+				$jq('#show_images').removeClass("alert-danger");
+				$jq('#show_images').addClass("alert-success");
 			} else {
-				$jq('#show_images').addClass("btn-danger");
+				$jq('#show_images').addClass("alert-danger");
 			}
 			window.setTimeout(reset_image_button_class,5000);
 		}
@@ -114,8 +114,45 @@ function add_new_post_button_handlers() {
 		},'html');
 	});
 	
-	$jq('#post_draft').click(function(event){
-		
+	$jq('#post_draft_button').click(function(event){
+		event.preventDefault();
+		save_post_as_draft();
 	});
 }
+
+function save_post_as_draft() {
+	save_post(true);
+}
+
+function save_post(draft) {
+	$jq('#post_draft').val=draft;
+	var $form=$jq('#new_post');
+	var $id_control=$jq('#post_id');
+	var content=JSON.stringify($form.serializeArray());
+	var method='POST';
+	var url='<%= posts_path %>';
+	//determine if we're saving a new post, or modifying a previously saved draft
+	if ($id_control.val>0) {
+		method='PATCH';
+		url='<%= posts_path %>/'+$id_control.val;
+	}
+	$jq.ajax({
+		type: method,
+		url: url,
+		data: content,
+		success: function(response) {
+			//Form saved...?
+			if (response.id>=0) {
+				//New post created! store the id so we can use it later
+				$id_control.val=response.id;
+			}
+		},
+		dataType: 'json'
+	});
+}
+
+function reset_image_button_class() {
+	$jq('#show_images')[0].className="btn btn-default dropdown-toggle";
+}
+
 

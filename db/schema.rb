@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131216215301) do
+ActiveRecord::Schema.define(version: 20131218194050) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "activities", force: true do |t|
     t.datetime "start_time"
@@ -69,6 +72,7 @@ ActiveRecord::Schema.define(version: 20131216215301) do
     t.integer  "category_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "draft",       default: false
   end
 
   add_index "posts", ["category_id"], name: "index_posts_on_category_id", using: :btree

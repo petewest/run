@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="col-md-4 pull-right">
 		<%= form_for(Attachment.new) do |f| %>
-		
+
 			<%= f.label :file, "Image upload" %>
 			<%= f.file_field :file, class: "file_upload", id: "fileupload" %>
 
@@ -9,9 +9,10 @@
 		<div id="bar_container">
 		</div>
 	</div>
-	<%= form_for(@post) do |f| %>
-
 	<div class="col-md-8">
+		<%= form_for(@post) do |f| %>
+			<%= f.hidden_field :draft %>
+			<%= f.hidden_field :id %>
 
 		<%= render 'shared/error_messages', object: f.object %>
 
@@ -27,7 +28,6 @@
 
 	</div>
 </div>
-
 <div class="form-group">
 		<div class="btn-group pull-right">
 			<div class="btn-group">
@@ -58,10 +58,11 @@
 		Use the dropdown boxes at the top right of the page to select items and add the ids to the write up
 	</p>
 </div>
+
 <div class="btn-group">
 	<%= f.submit class: "btn btn-large btn-primary" %>
 	<button type="button" class="btn btn-large btn-default" id="post_preview">Preview</button>
-	<button type="button" class="btn btn-large btn-default" id="post_draft">Save draft</button>
+	<button type="button" class="btn btn-large btn-default" id="post_draft_button">Save draft</button>
 </div>
 <% end %>
 
@@ -77,12 +78,6 @@
 <% content_for :jquery do %>
 
 <script type="text/javascript">
-var $jq=jQuery
-
-function reset_image_button_class() {
-	$jq('#show_images')[0].className="btn btn-default dropdown-toggle";
-}
-
 jQuery(add_images_to_dropdown($jq("#image_list")));
 jQuery(add_new_post_button_handlers);
 </script>
