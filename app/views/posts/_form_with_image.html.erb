@@ -25,6 +25,11 @@
 			<%= f.label :category_id %>
 			<%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "form-control" %>
 		</div>
+		<div class="checkbox">
+			<label>
+			<%= f.check_box :facebook_comments %> Show Facebook comments section
+			</label>
+		</div>
 	</div>
 	<div class="col-md-12">
 		<div class="form-group">
@@ -78,7 +83,14 @@
 <% content_for :jquery do %>
 
 <script type="text/javascript">
-jQuery(add_images_to_dropdown($jq("#image_list")));
-jQuery(add_new_post_button_handlers);
+function post_ready() {
+	add_images_to_dropdown($jq("#image_list"));
+	add_new_post_button_handlers();
+}
+
+jQuery(post_ready);
+//also add handlers for turbolinks (*sigh*)
+$(document).on('ready page:load', post_ready);
+
 </script>
 <% end %>

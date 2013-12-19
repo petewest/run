@@ -2,4 +2,4 @@
 <% flash.each do |key, value|
 html+=content_tag(:div, value, class: "alert alert-#{key}")
 end %>
-jQuery("#flash").append('<%= html %>');
+jQuery("#flash").html('<%= escape_javascript(html) %>');

@@ -76,10 +76,10 @@ class PostsController < ApplicationController
   
   private
   def get_post_from_params
-    @post=Post.find(params[:id])
+    @post=Post.includes(:user).find(params[:id])
   end
   def post_params
-    params.require(:post).permit(:title, :write_up, :category_id, :draft)
+    params.require(:post).permit(:title, :write_up, :category_id, :draft, :facebook_comments)
   end
   def correct_user_or_admin
     if current_user.admin?

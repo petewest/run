@@ -4,3 +4,23 @@
 
 <% render "shared/gmap_includes" %>
 
+<% if @post.facebook_comments %>
+
+	<% content_for :html_head do %>
+		<%= %Q{<meta property="fb:admins" content="#{@post.user.facebook_id}" />}.html_safe unless @post.user.facebook_id.blank? %>
+	<% end %>
+
+	<% content_for :js_includes do %>
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_GB/all.js#xfbml=1";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+	<% end %>
+	
+	<div class="fb-comments" data-numposts="5" data-href="<%= url_for(only_path: false) %>" data-colorscheme="light" data-order-by="reverse_time"></div>
+
+<% end %>

@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   end
   def show
     @user = User.find(params[:id])
-    @user_posts = @user.posts.paginate(page: params[:page], per_page:5)
+    @user_posts = @user.posts.includes(:user).paginate(page: params[:page], per_page:5)
   end
   
   def create
@@ -59,7 +59,7 @@ class UsersController < ApplicationController
   end
   #Paramaters we're allowed to change through edit (without requiring password confirmation)
   def edit_user_params
-    params.require(:user).permit(:name, :email, :gravatar_email)
+    params.require(:user).permit(:name, :email, :gravatar_email, :facebook_id)
   end
   def correct_user
     @user = User.find(params[:id])
