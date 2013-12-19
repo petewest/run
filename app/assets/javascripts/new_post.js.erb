@@ -59,11 +59,15 @@ function list_image($control, json, append){
 		event.preventDefault();
 		//insert to write up div here
 		var $write_up=$jq('#write_up_input');
-		var pos=$write_up.getCursorPosition();
-		var content=$write_up.val();
-		var new_content=content.substr(0, pos) + "\n\nimg. " + json.id + "\n\n" + content.substr(pos);
-		$write_up.val(new_content);
+		add_text_at_cursor($write_up, "\n\nimg. " + json.id + "\n\n")
 	});
+}
+
+function add_text_at_cursor($control, text) {
+	var pos=$control.getCursorPosition();
+	var content=$control.val();
+	var new_content=content.substr(0, pos) + text + content.substr(pos);
+	$control.val(new_content);
 }
 
 function add_new_post_button_handlers() {
@@ -116,6 +120,14 @@ function add_new_post_button_handlers() {
 	});
 	$jq('#post_save_button').click(function(event){
 		$jq('#post_draft').val("false");
+	});
+	
+	$jq('.activity_item').click(function(event){
+		event.preventDefault();
+		//find the db id from the dom id
+		var activity_id=this.id.replace("activity_","");
+		var $write_up=$jq('#write_up_input');
+		add_text_at_cursor($write_up, "\n\nmap. " + activity_id + "\n\n")
 	});
 }
 

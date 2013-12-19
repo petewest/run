@@ -31,13 +31,13 @@
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle" id="show_images" data-toggle="dropdown">Images <span class="caret"></span></button>
 				<ul class="dropdown-menu" id="image_list">
-					<li><a href='#'>Image here</a></li>
+					<li><a href='#'>Loading image list</a></li>
 				</ul>
 			</div>
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Activities <span class="caret"></span></button>
 				<ul class="dropdown-menu" id="activity_list">
-					<li><a href='#'>Activity here</a></li>
+					<%= render partial: 'activity_list', collection: current_user.activities %>
 				</ul>
 			</div>
 		</div>
