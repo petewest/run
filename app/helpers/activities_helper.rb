@@ -39,15 +39,4 @@ module ActivitiesHelper
     html=%Q{<div#{opts}id="map_canvas_#{id}" class="map_canvas">}
     html+=%Q{</div>}
   end
-
-  def google_maps_js
-    # Adds google map js code to the bottom of the page
-    # but we'll only add it if we actually need a map on screen
-    # and if we do, we only want to do it once
-    html=%Q{<script type="text/javascript"}
-    html+=%Q{ src="//maps.googleapis.com/maps/api/js}
-    html+=%Q{?key=#{gmaps_api_key}}
-    html+=%Q{&libraries=geometry&sensor=false">}
-    html+=%Q{</script>}
-  end
 end
