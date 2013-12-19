@@ -1,5 +1,6 @@
-//this little bit of code allows root_path helpers to be used (for ajax queries)
-<% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+<% 
+# this little bit of code allows root_path helpers to be used (for ajax queries)
+environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
 var $jq = jQuery.noConflict();
 //Have to use $jq alias to save me from decoupling Garmin API from prototype

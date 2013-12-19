@@ -1,14 +1,11 @@
 <% content_for :js_includes do %>
-<%= javascript_include_tag params[:controller] %>
 <script src="//maps.googleapis.com/maps/api/js?key=<%=gmaps_api_key%>&libraries=geometry&sensor=false">
 </script>
-
-<%=  %>
+<%= javascript_include_tag params[:controller] %>
 <% end %>
 <% content_for :jquery do %>
-<script type="text/javascript">
+<script>
   //load a map for each canvas
-  //jQuery(document).on('ready page:load', add_map(jQuery(".map_canvas") ));
 	jQuery(add_map(jQuery(".map_canvas")));
 </script>
 <%end%>
