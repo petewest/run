@@ -49,21 +49,13 @@ GarminDeviceControlDemo.prototype = {
 
 		this.findDevicesButton = $("findDevicesButton");
 		this.cancelFindDevicesButton = $("cancelFindDevicesButton");
-		this.deviceSelect = $("deviceSelect");
 
-		this.fileTypeSelect = $("fileTypeSelect");
-		this.readDataButton = $("readDataButton");
 		this.cancelReadDataButton = $("cancelReadDataButton");
-		this.readTracksText = $("readTracksText");
-		this.readRoutesSelect = $("readRoutesSelect");
-		this.readTracksSelect = $("readTracksSelect");
-		this.readWaypointsSelect = $("readWaypointsSelect");
 
 		this.progressBar = $("progressBar");
 		this.progressBarDisplay = $("progressBarDisplay");
 
 		this.activityListing = $("activityListing");
-		this.readSelectedButton = $("readSelectedButton");
 
 		this.checkAllBox = $("checkAllBox"); // Checkbox used to check/select all directory checkboxes.
 		this.garminController = null;
@@ -72,7 +64,6 @@ GarminDeviceControlDemo.prototype = {
 		this.activityDirectory = null; // Array of activity ID strings in the directory
 		this.activitySelection = null; // Array of selected activity objects in the directory
 		this.activityQueue = null; // Queue of activity IDs to sync events
-		this.fileTypeRead = this.fileTypeSelect.value;
 
 		if (this.garminController && this.garminController.isPluginInitialized()) {
 			this.garminController.findDevices();
@@ -127,104 +118,14 @@ GarminDeviceControlDemo.prototype = {
 				this.listDevices(devices);
 
 				this.cancelReadDataButton.onclick = function() {
-					this.fileTypeSelect.disabled = false;
-					this.readDataButton.disabled = false;
 					this.cancelReadDataButton.disabled = true;
 					this.hideProgressBar();
 					this.garminController.cancelReadFromDevice();
 				}.bind(this)
 
-				this.fileTypeSelect.disabled = false;
-				this.readDataButton.disabled = false;
-				this.readDataButton.onclick = function() {
-					this.activities = null;
-					this.readTracksSelect.length = 0;
-					this.readWaypointsSelect.length = 0;
-					this.readRoutesSelect.length = 0;
-					this.fileTypeSelect.disabled = true;
-					this.readDataButton.disabled = true;
-					this.cancelReadDataButton.disabled = false;
-					this.showProgressBar();
-					this.readSelectedButton.disabled = true;
-					this.checkAllBox.disabled = true;
-					this._clearActivityListing();
-
-					try {
-						// Leave as specific type calls in order to test both generic and specific
-						switch (this.fileTypeRead) {
-						case Garmin.DeviceControl.FILE_TYPES.gpx:
-							this.garminController.readFromDevice();
-							break;
-						case Garmin.DeviceControl.FILE_TYPES.tcx:
-							this.garminController.readHistoryFromFitnessDevice();
-							break;
-						case Garmin.DeviceControl.FILE_TYPES.crs:
-							this.garminController.readCoursesFromFitnessDevice();
-							break;
-						case Garmin.DeviceControl.FILE_TYPES.tcxDir:
-						case Garmin.DeviceControl.FILE_TYPES.crsDir:
-							this.garminController.readDataFromDevice(this.fileTypeRead);
-							break;
-						case Garmin.DeviceControl.FILE_TYPES.wkt:
-							this.garminController.readWorkoutsFromFitnessDevice();
-							break;
-						case Garmin.DeviceControl.FILE_TYPES.tcxProfile:
-							this.garminController.readUserProfileFromFitnessDevice();
-							break;
-						case Garmin.DeviceControl.FILE_TYPES.goals:
-							this.garminController.readGoalsFromFitnessDevice();
-							break;
-						}
-					} catch (e) {
-						this.handleException(e);
-					}
-
-					this.checkAllBox.disabled = false;
-
-				}.bind(this)
-
-			/*	this.readSelectedButton.disabled = true;
-				this.readSelectedButton.onclick = function() {
-
-					if (this._directoryHasSelected() == false) {
-						alert("At least one activity must be selected before attempting to read.");
-					} else {
-						this.activities = null;
-						this.readTracksSelect.length = 0;
-						this.readWaypointsSelect.length = 0;
-						this.readRoutesSelect.length = 0;
-						this.fileTypeSelect.disabled = true;
-						this.readSelectedButton.disabled = true;
-						this.cancelReadDataButton.disabled = false;
-
-						this.showProgressBar();
-
-						if (this.fileTypeRead == Garmin.DeviceControl.FILE_TYPES.tcxDir) {
-							this.fileTypeRead = Garmin.DeviceControl.FILE_TYPES.tcxDetail;
-						} else if (this.fileTypeRead == Garmin.DeviceControl.FILE_TYPES.crsDir) {
-							this.fileTypeRead = Garmin.DeviceControl.FILE_TYPES.crsDetail;
-						}
-
-						this._readSelectedActivities();
-
-						this.checkAllBox.disabled = false;
-					}
-				}.bind(this);
-
-				this.checkAllBox.disabled = true;
-				this.checkAllBox.onclick = function() {
-					this._checkAllDirectory();
-				}.bind(this);*/
-
-				this.fileTypeSelect.onchange = function() {
-					this.fileTypeRead = this.fileTypeSelect.value;
-				}.bind(this);
-
 			} else {
 				this.setStatus("No devices found.");
 				this.deviceInfo.innerHTML = "";
-				this._clearHtmlSelect(this.deviceSelect);
-				this.deviceSelect.disabled = true;
 			}
 		} catch (e) {
 			this.handleException(e);
@@ -236,7 +137,6 @@ GarminDeviceControlDemo.prototype = {
 	},
 
 	listDevices: function(devices) {
-		this._clearHtmlSelect(this.deviceSelect);
 		var $device_list = $jq("#list_of_devices");
 		for (var i = 0; i < devices.length; i++) {
 			var $new_link = $jq('<a>').attr({
@@ -285,8 +185,6 @@ GarminDeviceControlDemo.prototype = {
 	onFinishReadFromDevice: function(json) {
 		try {
 			this.setStatus("Processing retrieved data...");
-			this.fileTypeSelect.disabled = false;
-			this.readDataButton.disabled = false;
 			this.cancelReadDataButton.disabled = true;
 			this.hideProgressBar();
 			//this.dataString.value = json.controller.gpsDataString;
@@ -328,7 +226,6 @@ GarminDeviceControlDemo.prototype = {
 
 					if (this.activities != null) {
 						// If we read a directory, save the directory for the session
-						//this._createActivityDirectory();
 						this.display_activity_list();
 					}
 					break;
@@ -336,7 +233,6 @@ GarminDeviceControlDemo.prototype = {
 				case Garmin.DeviceControl.FILE_TYPES.crsDetail:
 
 					// Store this read activity
-					//this.activities = this.activities.concat(this.factory.parseDocument(json.controller.gpsData));
 					this.uploadToServer(this.factory.parseDocument(json.controller.gpsData), json.controller.gpsDataStringCompressed)
 
 					// Not finished with the activity queue
@@ -362,7 +258,6 @@ GarminDeviceControlDemo.prototype = {
 					// List the activities (and display on Google Map)
 					if (this.activities != null) {
 						this.setStatus("Listing activities...");
-						//var summary = this._listActivities(this.activities);
 						//this.setStatus(new Template("Results: #{routes} routes, #{tracks} tracks and  #{waypoints} waypoints found").evaluate(summary));
 					} else {
 						this.setStatus("Finished retrieving data.");
@@ -371,7 +266,6 @@ GarminDeviceControlDemo.prototype = {
 					// List the activity directory
 					if (this.activities != null) {
 						this.setStatus("Listing activity directory...");
-						//var summary = this._listDirectory(this.activities);
 						//this.setStatus( new Template("Results: #{routes} routes, #{tracks} tracks and  #{waypoints} waypoints found").evaluate(summary) );
 					} else {
 						this.setStatus("Finished retrieving data.");
@@ -391,12 +285,10 @@ GarminDeviceControlDemo.prototype = {
 					break;
 				case Garmin.DeviceControl.FILE_TYPES.tcxDir:
 				case Garmin.DeviceControl.FILE_TYPES.crsDir:
-					this.readSelectedButton.disabled = false;
 					this.checkAllBox.disabled = false;
 					break;
 				case Garmin.DeviceControl.FILE_TYPES.tcxDetail:
 				case Garmin.DeviceControl.FILE_TYPES.crsDetail:
-					this.readSelectedButton.disabled = false;
 					this.checkAllBox.disabled = false;
 					break;
 				}
@@ -485,7 +377,6 @@ GarminDeviceControlDemo.prototype = {
 		var controller=this; //set this here so we can use it in the callback function
 		//Add event handlers to these items
 		$jq("input.activity_check").click(function(event) {
-			//var controller = event.data.controller;
 			//check to see if we've already processed (or are processing) this item
 			if (!this.disabled) {
 				this.disabled=true;
@@ -544,204 +435,6 @@ GarminDeviceControlDemo.prototype = {
 	_checkAllDirectory: function() {
 		for (var boxIndex = 0; boxIndex < this.activityDirectory.length; boxIndex++) {
 			$("activityItemCheckbox" + boxIndex).checked = this.checkAllBox.checked;
-		}
-	},
-
-	/** Checks if any activities in directory listing are selected.  Returns true if so, false otherwise.
-	 */
-	_directoryHasSelected: function() {
-		for (var boxIndex = 0; boxIndex < this.activityDirectory.length; boxIndex++) {
-			if ($("activityItemCheckbox" + boxIndex).checked == true) {
-				return true;
-			}
-		}
-
-		return false;
-	},
-
-	/** Lists the directory and returns summary data (# of tracks). 
-	 */
-	_listDirectory: function(activities) {
-		var numOfRoutes = 0;
-		var numOfTracks = 0;
-		var numOfWaypoints = 0;
-
-		// clear existing entries
-		this._clearHtmlSelect(this.readRoutesSelect);
-		this._clearHtmlSelect(this.readTracksSelect);
-		this._clearHtmlSelect(this.readWaypointsSelect);
-
-		// loop through each activity
-		for (var i = 0; i < activities.length; i++) {
-			var activity = activities[i];
-
-			// Directory entry
-			if (this.fileTypeRead == Garmin.DeviceControl.FILE_TYPES.tcxDir || this.fileTypeRead == Garmin.DeviceControl.FILE_TYPES.crsDir) {
-				this._addToActivityListing(i, activity);
-			}
-
-			numOfTracks++;
-		}
-
-		return {
-			routes: numOfRoutes,
-			tracks: numOfTracks,
-			waypoints: numOfWaypoints
-		};
-	},
-
-	/** List activities and display on Google Map when appropriate.
-	 */
-	_listActivities: function(activities) {
-		var numOfRoutes = 0;
-		var numOfTracks = 0;
-		var numOfWaypoints = 0;
-
-		// clear existing entries
-		this._clearHtmlSelect(this.readRoutesSelect);
-		this._clearHtmlSelect(this.readTracksSelect);
-		this._clearHtmlSelect(this.readWaypointsSelect);
-
-		// loop through each activity
-		for (var i = 0; i < activities.length; i++) {
-			var activity = activities[i];
-			var series = activity.getSeries();
-
-			// loop through each series in the activity
-			for (var j = 0; j < series.length; j++) {
-				var curSeries = series[j];
-
-				switch (curSeries.getSeriesType()) {
-				case Garmin.Series.TYPES.history:
-					// activity contains a series of type history, list the track
-					this._listTrack(activity, curSeries, i, j);
-					numOfTracks++;
-					break;
-				case Garmin.Series.TYPES.route:
-					// activity contains a series of type route, list the route
-					this._listRoute(activity, curSeries, i, j);
-					numOfRoutes++;
-					break;
-				case Garmin.Series.TYPES.waypoint:
-					// activity contains a series of type waypoint, list the waypoint
-					this._listWaypoint(activity, curSeries, i, j);
-					numOfWaypoints++;
-					break;
-				case Garmin.Series.TYPES.course:
-					// activity contains a series of type course, list the coursetrack
-					this._listCourseTrack(activity, curSeries, i, j);
-					numOfTracks++;
-					break;
-				}
-			}
-		}
-
-		if (numOfRoutes > 0) {
-			this.readRoutesSelect.disabled = false;
-			this.displayTrack(this.readRoutesSelect.options[this.readRoutesSelect.selectedIndex].value);
-			this.readRoutesSelect.onchange = function() {
-				this.displayTrack(this.readRoutesSelect.options[this.readRoutesSelect.selectedIndex].value);
-			}.bind(this);
-		} else {
-			this.readRoutesSelect.disabled = true;
-		}
-
-		if (numOfTracks > 0) {
-			this.readTracksSelect.disabled = false;
-			this.displayTrack(this.readTracksSelect.options[this.readTracksSelect.selectedIndex].value);
-			this.readTracksSelect.onchange = function() {
-				this.displayTrack(this.readTracksSelect.options[this.readTracksSelect.selectedIndex].value);
-			}.bind(this);
-		} else {
-			this.readTracksSelect.disabled = true;
-		}
-
-		if (numOfWaypoints > 0) {
-			this.readWaypointsSelect.disabled = false;
-			this.displayWaypoint(this.readWaypointsSelect.options[this.readWaypointsSelect.selectedIndex].value);
-			this.readWaypointsSelect.onchange = function() {
-				this.displayWaypoint(this.readWaypointsSelect.options[this.readWaypointsSelect.selectedIndex].value);
-			}.bind(this);
-		} else {
-			this.readWaypointsSelect.disabled = true;
-		}
-
-		return {
-			routes: numOfRoutes,
-			tracks: numOfTracks,
-			waypoints: numOfWaypoints
-		};
-	},
-
-	/** Load route names into select UI component.
-	 * @private
-	 */
-	_listRoute: function(activity, series, activityIndex, seriesIndex) {
-		var routeName = activity.getAttribute(Garmin.Activity.ATTRIBUTE_KEYS.activityName);
-		this.readRoutesSelect.options[this.readRoutesSelect.length] = new Option(routeName, activityIndex + "," + seriesIndex);
-	},
-
-	/** Load track name into select UI component.
-	 * @private
-	 */
-	_listTrack: function(activity, series, activityIndex, seriesIndex) {
-		var startDate = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.startTime).getValue();
-		var endDate = activity.getSummaryValue(Garmin.Activity.SUMMARY_KEYS.endTime).getValue();
-		var trackName = startDate.getDateString() + " (Duration: " + startDate.getDurationTo(endDate) + ")";
-		this.readTracksSelect.options[this.readTracksSelect.length] = new Option(trackName, activityIndex + "," + seriesIndex);
-	},
-
-	/** Load track name into select UI component.
-	 * @private
-	 */
-	_listCourseTrack: function(activity, series, activityIndex, seriesIndex) {
-		var trackName = activity.getAttribute(Garmin.Activity.ATTRIBUTE_KEYS.activityName);
-		this.readTracksSelect.options[this.readTracksSelect.length] = new Option(trackName, activityIndex + "," + seriesIndex);
-	},
-
-
-	/** Load waypoint name into select UI component.
-	 * @private
-	 */
-	_listWaypoint: function(activity, series, activityIndex, seriesIndex) {
-		var wptName = activity.getAttribute(Garmin.Activity.ATTRIBUTE_KEYS.activityName);
-		this.readWaypointsSelect.options[this.readWaypointsSelect.length] = new Option(wptName, activityIndex + "," + seriesIndex);
-	},
-
-	/** Draws a simple line on the map using the Garmin.MapController.
-	 * @param {Select} index - value of select widget.
-	 */
-	displayTrack: function(index) {
-		index = index.split(",", 2);
-		var activity = this.activities[parseInt(index[0])];
-		var series = activity.getSeries()[parseInt(index[1])];
-
-		//this.mc.map.clearOverlays();
-		if (series.findNearestValidLocationSample(0, 1) != null) {
-			//this.mc.drawTrack(series);
-		}
-	},
-
-	/** Draws a point (usualy as a thumb tack) on the map using the Garmin.MapController.
-	 * @param {Select} index - value of select widget.
-	 */
-	displayWaypoint: function(index) {
-		index = index.split(",", 2);
-		var activity = this.activities[parseInt(index[0])];
-		var series = activity.getSeries()[parseInt(index[1])];
-
-		this.mc.map.clearOverlays();
-		this.mc.drawWaypoint(series);
-	},
-
-	/**Sets the size of the select options to zero which essentially clears it from 
-	 * any values.
-	 * @private
-	 */
-	_clearHtmlSelect: function(select) {
-		if (select) {
-			//select.size = 0;
-			select.options.size = 0;
 		}
 	},
 
