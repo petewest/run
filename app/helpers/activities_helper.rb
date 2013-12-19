@@ -25,7 +25,7 @@ module ActivitiesHelper
   end
   
   def map_for_activity(id, options={})
-    map_for_activity_redcloth(id,options).html_safe
+    map_for_activity_redcloth(id,false,options).html_safe
   end
   
   def map_for_activity_dynamic(id, options={})
@@ -36,7 +36,8 @@ module ActivitiesHelper
     end
     opts=" "
     options.each {|k,v| opts+="#{k.to_s}='#{v}' " }
-    html=%Q{<div#{opts}id="map_canvas_#{id}" class="map_canvas">}
-    html+=%Q{</div>}
+    html=%Q{<div class="map_container">}
+    html+=%Q{<div#{opts}id="map_canvas_#{id}" class="map_canvas">}
+    html+=%Q{</div></div>}
   end
 end

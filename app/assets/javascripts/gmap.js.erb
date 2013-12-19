@@ -45,11 +45,12 @@ function get_bounds(polyline) {
 	var b = new google.maps.LatLngBounds();
 	var path = polyline.getPath();
 	var length = path.getLength();
-	var i = [0, (length / 3).toFixed(0), (length / 3).toFixed(0) * 2];
-	b.extend(path.getAt(i[0]));
-	b.extend(path.getAt(i[1]));
-	b.extend(path.getAt(i[2]));
-	b.extend(path.getAt(length - 1));
+	//position of: first point, 1/3, 1/2, 2/3, and final point
+	var i = [0, (length / 3).toFixed(0), (length / 2).toFixed(0) , (length / 3).toFixed(0) * 2, length - 1];
+	//add these items to the bounding box
+	for (var j=0; j<i.length;j++) {
+		b.extend(path.getAt(i[j]));
+	}
 	return b;
 }
 

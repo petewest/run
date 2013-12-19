@@ -245,21 +245,35 @@ input {
 }
 
 .activity_map {
+}
+
+
+.map_caption {
+	@include de_emphasise;
+	margin:2px;
+	padding:2px;
+}
+
+@mixin post_embed {
 	border:1px solid $gray-light;
 	margin:2px;
 	padding:2px;
 }
 
-.post_image {
-	@extend .activity_map
+.map_container {
+	@include post_embed;
 }
 
-.map_caption {
-	@include de_emphasise;
-}
 .map_canvas {
-   width: 400px;
-   height: 250px;
+	width: 600px;
+	height: 400px;
+}
+
+.post_image {
+	@extend .activity_map;
+	img {
+		@include post_embed;
+	}
 }
 
 .image_caption {
