@@ -1,7 +1,7 @@
 <% content_for :js_includes do %>
 <script src="//maps.googleapis.com/maps/api/js?key=<%=gmaps_api_key%>&libraries=geometry&sensor=false">
 </script>
-<%= javascript_include_tag params[:controller] %>
+<%= javascript_include_tag 'gmap' %>
 <% end %>
 <% content_for :jquery do %>
 <script>
