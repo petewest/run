@@ -1,10 +1,12 @@
 <% content_for :js_includes do %>
+<%= javascript_include_tag params[:controller] %>
 <%= google_maps_js.html_safe %>
 <% end %>
 <% content_for :jquery do %>
 <script type="text/javascript">
   //load a map for each canvas
-  jQuery( add_map(jQuery(".map_canvas") ));
+  //jQuery(document).on('ready page:load', add_map(jQuery(".map_canvas") ));
+	jQuery(add_map(jQuery(".map_canvas")));
 </script>
 <%end%>
 

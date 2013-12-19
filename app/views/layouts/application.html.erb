@@ -2,8 +2,8 @@
 <html>
 <head>
   <title><%= full_title(yield(:title)) %></title>
-  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag    "application", media: "all" %>
+  <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
   <%= render 'layouts/shim' %>
   <%= auto_discovery_link_tag :rss, feed_url %>
@@ -22,7 +22,7 @@
  <%= debug(params) if Rails.env.development? %>
 </div>
 <%= yield(:js_includes)%>
- <%= javascript_include_tag params[:controller] %>
+
 <%= yield(:jquery)%>
 </body>
 </html>
