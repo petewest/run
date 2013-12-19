@@ -7,7 +7,11 @@ class UsersController < ApplicationController
   end
   def show
     @user = User.find(params[:id])
-    @user_posts = @user.posts.includes(:user).paginate(page: params[:page], per_page:5)
+    if current_user?(@user)
+      @user_posts = @user.posts.includes(:user).paginate(page: params[:page], per_page:5)
+    else
+      @user_posts = @user.posts.where(draft:false).includes(:user).paginate(page: params[:page], per_page:5)
+    end
   end
   
   def create
