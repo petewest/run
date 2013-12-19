@@ -20,7 +20,7 @@
 	  fjs.parentNode.insertBefore(js, fjs);
 	}(document, 'script', 'facebook-jssdk'));</script>
 	<% end %>
-	
-	<div class="fb-comments" data-numposts="5" data-href="<%= url_for(only_path: false) %>" data-colorscheme="light" data-order-by="reverse_time"></div>
-
+	<div class="row">
+	<div class="col-md-11 col-md-offset-1 fb-comments" data-numposts="5" data-href="<%= url_for(only_path: false) %>" data-colorscheme="light" data-order-by="reverse_time"></div>
+	</div>
 <% end %>
