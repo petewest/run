@@ -49,14 +49,11 @@ function add_progress_bar($bar_container, filename) {
 
 function list_image($control, json, append){
 	//add the image to the control
+	var html="<li><a href='#' id='image_"+json.id+"' class='image_item'><img src='"+json.file_url_thumb+"' />"+json.file_file_name+"</a></li>";
 	if (append) {
-		$control.append(
-			"<li><a href='#' id='image_"+json.id+"' class='image_item'><img src='"+json.file_url_thumb+"' />"+json.file_file_name+"</a></li>"
-		);
+		$control.append(html);
 	} else {
-		$control.prepend(
-			"<li><a href='#' id='image_"+json.id+"' class='image_item'><img src='"+json.file_url_thumb+"' />"+json.file_file_name+"</a></li>"
-		);
+		$control.prepend(html);
 	}
 	$jq("#image_"+json.id).click(function(event) {
 		event.preventDefault();

@@ -2,51 +2,53 @@
 <% environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
 
-var all_maps={};
+var all_maps = {};
 
 function add_map($canvas) {
-   //add map to jquery object(s)
-   var map_options= {
-          center: new google.maps.LatLng(-34.397, 150.644),
-          zoom: 8
-        };
-   $canvas.each(function(index) {
-        var canvas=this;
-        var map = new google.maps.Map(canvas,
-        map_options);
-        //store this new map in the global array
-        all_maps[canvas.id]=map;
-        //find the id we're interested in
-        var activity_id=canvas.id.replace("map_canvas_","");
-	//fire off a query to get the path info
-        jQuery.getJSON('<%= map_path %>', {id: activity_id}).done(function(data) {
-               add_to_map(data.polyline, canvas);
-           });
-      });
+	//add map to jquery object(s)
+	var map_options = {
+		center: new google.maps.LatLng(0, 50),
+		zoom: 8,
+		mapTypeId: google.maps.MapTypeId.TERRAIN
+	};
+	$canvas.each(function(index) {
+		var canvas = this;
+		var map = new google.maps.Map(canvas, map_options);
+		//store this new map in the global array
+		all_maps[canvas.id] = map;
+		//find the id we're interested in
+		var activity_id = canvas.id.replace("map_canvas_", "");
+		//fire off a query to get the path info
+		jQuery.getJSON('<%= map_path %>', {
+			id: activity_id
+		}).done(function(data) {
+			add_to_map(data.polyline, canvas);
+		});
+	});
 }
+
 function add_to_map(line, canvas) {
-    decoded_path=google.maps.geometry.encoding.decodePath(line);
-    path_options={
-        path: decoded_path,
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.5,
-        strokeWeight: 5
-    };
-    track_path=new google.maps.Polyline(path_options);
-    track_path.setMap(all_maps[canvas.id]);
-    all_maps[canvas.id].fitBounds(get_bounds(track_path));
+	decoded_path = google.maps.geometry.encoding.decodePath(line);
+	path_options = {
+		path: decoded_path,
+		strokeColor: "#FF0000",
+		strokeOpacity: 0.5,
+		strokeWeight: 5
+	};
+	track_path = new google.maps.Polyline(path_options);
+	track_path.setMap(all_maps[canvas.id]);
+	all_maps[canvas.id].fitBounds(get_bounds(track_path));
 }
 
 function get_bounds(polyline) {
-    var b=new google.maps.LatLngBounds();
-    var path=polyline.getPath();
-    var length=path.getLength();
-    var i=[0,(length/3).toFixed(0), (length/3).toFixed(0)*2];
-    b.extend(path.getAt(i[0]));
-    b.extend(path.getAt(i[1]));
-    b.extend(path.getAt(i[2]));
-	b.extend(path.getAt(length-1));
-    return b;
+	var b = new google.maps.LatLngBounds();
+	var path = polyline.getPath();
+	var length = path.getLength();
+	var i = [0, (length / 3).toFixed(0), (length / 3).toFixed(0) * 2];
+	b.extend(path.getAt(i[0]));
+	b.extend(path.getAt(i[1]));
+	b.extend(path.getAt(i[2]));
+	b.extend(path.getAt(length - 1));
+	return b;
 }
-
 
