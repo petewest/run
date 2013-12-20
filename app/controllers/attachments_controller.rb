@@ -19,7 +19,6 @@ class AttachmentsController < ApplicationController
       format.html do
         if result
           #success!
-          #just a placeholder as we'll switch to JSON uploading later
           flash[:success]="Save complete!"
           redirect_to root_url
         else
