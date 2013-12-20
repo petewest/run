@@ -1,0 +1,31 @@
+<div class="row">
+<div class="col-md-4 pull-right" id="attachment_panel">
+  <%= render 'shared/upload_attachment' %>
+</div>
+
+<div id="post_panel">
+	<%= render 'post_form'%>
+</div>
+</div>
+<div class="row">
+	<div class="write_up write_up_preview" style="display:none;" id="write_up_preview">
+	</div>
+</div>
+
+
+
+<% content_for :js_includes do %>
+<%= javascript_include_tag "new_post" %>
+<% end %>
+
+<% content_for :jquery do %>
+
+<script type="text/javascript">
+function post_ready() {
+	add_new_post_button_handlers();
+}
+
+jQuery(post_ready);
+
+</script>
+<% end %>

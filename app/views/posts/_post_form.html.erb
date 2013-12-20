@@ -1,0 +1,62 @@
+<%= form_for(@post) do |f| %>
+<%= f.hidden_field :draft %>
+
+<div class="col-md-8">
+	<div>
+		<%= render 'shared/error_messages', object: f.object %>
+	</div>
+	
+	<div class="form-group">
+		<%= f.label :title %>
+		<%= f.text_field :title, class: "form-control" %>
+	</div>
+
+	<div class="form-group">
+		<%= f.label :category_id %>
+		<%= f.collection_select :category_id, Category.all, :id, :name, {}, class: "form-control" %>
+	</div>
+	<div class="checkbox">
+		<label>
+		<%= f.check_box :facebook_comments %> Show Facebook comments section
+		</label>
+	</div>
+</div>
+<div class="col-md-12">
+	<div class="form-group">
+		<div class="btn-group pull-right">
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" id="show_images" data-toggle="dropdown">Images <span class="caret"></span></button>
+				<ul class="dropdown-menu" id="image_list">
+					<%= render current_user.attachments.first(20) %>
+				</ul>
+			</div>
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Activities <span class="caret"></span></button>
+				<ul class="dropdown-menu" id="activity_list">
+					<%= render partial: 'activity_list', collection: current_user.activities %>
+				</ul>
+			</div>
+		</div>
+		<%= f.label :write_up %>
+		<%= f.text_area :write_up, rows: "20", class: "form-control form-writeup", id: "write_up_input" %>
+
+		<div class="btn-group">
+			<%= f.submit class: "btn btn-large btn-primary", id: 'post_save_button' %>
+			<button type="button" class="btn btn-large btn-default" id="post_preview">Preview</button>
+			<%= f.submit 'Save as draft', id: 'post_draft_button', class: "btn btn-large btn-default" %>
+		</div>
+		<p class="help-block">You can use <a href="http://redcloth.org/textile" target="_blank">Textile</a> formatting above to make your post pretty</p>
+		<p class="help-block">The following additional tags have been added:
+			<ul>
+				<li>img: Use the "img" tag to add images you've uploaded.<br>Syntax: img. [&lt;|&gt;]id [Caption]<br>Where: &lt;|&gt; is the alignment indicator (left, centre, right)<br>id is the image id (see above) and caption is an optional caption.  E.g. to embed image 22 as a right aligned image use: img. &gt;22
+				</li>
+				<li>map: Create a map of an activity.<br>Syntax: map. [&lt;|&gt;]id [Caption]<br>Where: &lt;|&gt; is the alignment indicator (left, centre, right)<br>id is the activity id (see above) and caption is an optional caption.  E.g. to embed a map of activity 22, centred on the page: map. |22
+				</li>
+			</ul>
+		</p>
+		<p class="help-block">
+			Use the dropdown boxes at the top right of the page to select items and add the ids to the write up
+		</p>
+	</div>
+</div>
+<% end %>

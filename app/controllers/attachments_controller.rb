@@ -9,6 +9,15 @@ class AttachmentsController < ApplicationController
     @attachment=current_user.attachments.create(attachment_params)
     result=@attachment.save
     respond_to do |format|
+      format.js do
+        if result
+          flash.now[:success]="Attachment uploaded"
+          render @attachment
+        else
+          flash.now[:danger]="Error processing attachment"
+          render partial:'shared/refresh_flash', layout:false, status: :unsupported_media_type
+        end
+      end
       format.json do
         if result
           render json: @attachment, only: [:id, :file_file_name], methods: [:file_url_thumb]
@@ -36,7 +45,7 @@ class AttachmentsController < ApplicationController
   end
   
   def index
-    @attachments=current_user.attachments.last(20)
+    @attachments=current_user.attachments.first(20)
     respond_to do |format|
       format.json do
         render json: @attachments, only: [:id, :file_file_name ], methods: [:file_url_thumb]

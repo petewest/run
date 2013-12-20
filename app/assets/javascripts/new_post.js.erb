@@ -24,18 +24,6 @@
 
 var $jq=jQuery;
 
-function add_images_to_dropdown($image_list) {
-	//clear the existing list
-	$image_list.html("");
-	//by default attachments path lists the most recent 20 items
-	$jq.get('<%= attachments_path %>',function(json){
-		//process result
-		$jq.each(json, function(index, value){
-			list_image($image_list, value, true);
-		});
-	});
-}
-
 function add_progress_bar($bar_container, filename) {
 	var safe_name=filename.replace('.','_')
 	html='<div class="progress">'
@@ -66,7 +54,7 @@ function add_text_at_cursor($control, text) {
 
 function add_new_post_button_handlers() {
 	$jq('#fileupload').fileupload({
-		dataType: 'json',
+		dataType: 'script',
 		add: function(e, data) {
 			//clear the bar container
 			$jq("#bar_container").html("");
@@ -85,13 +73,11 @@ function add_new_post_button_handlers() {
 			});
 		},
 		done: function(e, response) {
-			if (response.result.id>=0) {
-				//refresh the image list
-				list_image($jq("#image_list"), response.result, false);
-				//set the background of the image button to success
+			//set the background of the image button to success
+			if (response.textStatus=="success"){
 				$jq('#show_images').removeClass("alert-danger");
 				$jq('#show_images').addClass("alert-success");
-			} else {
+			} else { 
 				$jq('#show_images').addClass("alert-danger");
 			}
 			window.setTimeout(reset_image_button_class,5000);

@@ -26,14 +26,11 @@ class PostsController < ApplicationController
   
   def create
     @post=current_user.posts.create(post_params)
-    @post.draft=(params[:commit]=="Save as draft") #the jquery click event isn't setting the flag reliably, so force it here
     if @post.save
       if @post.draft
-        #if it's a draft we don't want to de-activate the controls
         flash.now[:success]="Draft saved"
-        #so we'll use the 'new' render, as this just refreshes error
-        #and flash messages
-        render 'new'
+        #if it's a draft, we'll stay in edit mode
+        render 'edit'
       else
         flash[:success]="Post created!"
         redirect_to @post
@@ -52,13 +49,9 @@ class PostsController < ApplicationController
   
   def update
     if @post.update_attributes(post_params)
-      @post.draft=(params[:commit]=="Save as draft") #the jquery click event isn't setting the flag reliably, so force it here
       if @post.draft
-        #if it's a draft we don't want to de-activate the controls
         flash.now[:success]="Draft saved"
-        #so we'll use the 'new' render, as this just refreshes error
-        #and flash messages
-        render 'new'
+        render 'edit'
       else
         flash[:success]="Post successfully updated"
         redirect_to @post
