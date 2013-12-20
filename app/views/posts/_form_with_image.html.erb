@@ -1,16 +1,9 @@
 <div class="row">
-<div class="col-md-4 pull-right">
-	<%= form_for(Attachment.new) do |f| %>
-
-	<%= f.label :file, "Image upload" %>
-	<%= f.file_field :file, class: "file_upload", id: "fileupload" %>
-
-	<% end%>
-	<div id="bar_container">
-	</div>
+<div class="col-md-4 pull-right" id="attachment_panel">
+  <%= render 'shared/upload_attachment' %>
 </div>
 
-<div>
+<div id="post_panel">
 	<%= form_for(@post) do |f| %>
 	<%= f.hidden_field :draft %>
 

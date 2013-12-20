@@ -1,0 +1,9 @@
+        <%= form_for(Attachment.new) do |f| %>
+
+        <%= f.label :file, "Image upload" %>
+        <%= f.file_field :file, class: "file_upload", id: "fileupload" %>
+
+        <% end%>
+        <div id="bar_container">
+        </div>
+
