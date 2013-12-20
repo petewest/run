@@ -57,12 +57,10 @@ p {
 .navbar-brand {
   margin-right: 10px;
   font-size: 1.7em;
-  color: #fff;
   text-transform: uppercase;
   letter-spacing: -1px;
   font-weight: bold;
   &:hover {
-    color: #fff;
     text-decoration: none;
   }
 }
@@ -194,6 +192,12 @@ input {
 
 .post-title {
 	margin-bottom:0px;
+	a {
+		color: $text-color;
+		&:hover {
+			color: $text-color;
+		};
+	}
 }
 
 @mixin de_emphasise {
