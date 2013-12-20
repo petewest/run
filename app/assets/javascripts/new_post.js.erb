@@ -55,12 +55,6 @@ function list_image($control, json, append){
 	} else {
 		$control.prepend(html);
 	}
-	$jq("#image_"+json.id).click(function(event) {
-		event.preventDefault();
-		//insert to write up div here
-		var $write_up=$jq('#write_up_input');
-		add_text_at_cursor($write_up, "\n\nimg. " + json.id + "\n\n")
-	});
 }
 
 function add_text_at_cursor($control, text) {
@@ -128,6 +122,15 @@ function add_new_post_button_handlers() {
 		var activity_id=this.id.replace("activity_","");
 		var $write_up=$jq('#write_up_input');
 		add_text_at_cursor($write_up, "\n\nmap. " + activity_id + "\n\n")
+	});
+
+
+	$jq("#image_list").on("click", "a", function(event) {
+		event.preventDefault();
+		//insert to write up div here
+		var $write_up=$jq('#write_up_input');
+		var id=this.id.replace("image_","");
+		add_text_at_cursor($write_up, "\n\nimg. " + id + "\n\n")
 	});
 }
 
