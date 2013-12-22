@@ -26,5 +26,9 @@ module Run
     # config.i18n.default_locale = :de
     I18n.enforce_available_locales = true
     config.assets.precompile+= %w(*.png *.jpg *.jpeg *.gif)
+    
+    #Google site verification info
+    config.google_verification = ENV['GOOGLE_SITE_VERIFICATION'] || 'google_verification'
+    
   end
 end

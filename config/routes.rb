@@ -25,6 +25,12 @@ Run::Application.routes.draw do
   match '/activity_check', to: 'activities#check_upload', via: 'get', defaults: {format: 'json'}
   match '/map', to: 'activities#show', via: 'get', defaults: {format: 'json'}, as: 'map'
 
+  #Add google site verification
+  get "/#{Rails.application.config.google_verification}.html",
+    to: proc { |env| [200, {},
+      ["google-site-verification: #{Rails.application.config.google_verification}.html"]] }
+  
+  
   # Test having category routes available:
   # this should probably be the last route?
   get '/:category', to: 'posts#index', as: :cat
