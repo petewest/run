@@ -1,4 +1,53 @@
 == README
 
-Basic running and racing report website
+Basic running and racing report website.  Designed with a single running community in mind, to allow all users to post race and training reports easily.  This is mainly an experiment in me learning Rails so it's no where near a complete system.
+
+== Features
+
+Secure, multi-session, user logins
+Admin-configurable categories
+Allows upload of runs from Garmin Communicator plugin
+Allows upload of images to attach to reports
+Use Textile markup in reports
+Embed maps & images in race reports
+
+
+== Image upload
+
+Uses amazon s3: configure environment variables for S3_BUCKET_NAME,AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY using your Amazon s3 details.
+See: https://devcenter.heroku.com/articles/paperclip-s3 for a guide to configuring Heroku if you're using that to host
+
+== Google site verification
+
+If you're using the google webmaster tools (https://www.google.com/webmasters/tools/dashboard) and want to add your verification code to your website, set the environment variable +GOOGLE_VERIFICATION_CODE+ to be the string they give you, including the "google" but excluding the "html" (+google534723542364+ for example).
+
+== Limitations
+
+Currently there's no way of setting admin users without dropping to the rails console.  Sign up your admin user and get your user ID (probably the first user, so user id 1).
+
+Go to the console:
+
+If you're on a shell on your web host:
+
+  $ rails c 
+
+If you're using heroku
+
+  $ heroku rails c
+
+To set your user as admin:
+
+  User.find(<id>).toggle!(:admin)
+
+(where <id> is your user id: 1, 2, etc...)
+
+If you don't know your user id then run: 
+
+  User.find_by_email("email_address").toggle!(:admin)
+
+Don't run both or you'll toggle admin on then off again :)
+
+You can set as many admin users as you like.  These users can then delete/edit other users posts and log off their sessions, etc.
+
+Admin users should create some categories and set up "Activity Types" so that uploaded activities can be recognised properly
 
