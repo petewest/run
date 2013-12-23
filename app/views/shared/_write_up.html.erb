@@ -1,9 +1,12 @@
 <div class="write_up">
 	<% if summary
 		text=write_up_summary(post)
-	   else
-	     text=write_up.gsub(writeup_break,"")
-	   end %>
+	else
+		text=write_up.gsub(writeup_break,"")
+	end 
+	text||=""
+	%>
+	
 	<% r=RedCloth.new(text, [:sanitize_html])
 	r.extend RedclothExtensions
 	%>
