@@ -4,6 +4,6 @@
 <% end %>
 <h2 class="post-title"><%= link_to post.title, post %></h2>
 <p class="byline">
-	Posted by <%= link_to post.user.name, post.user %> <time datetime="<%= post.created_at.strftime("%Y-%m-%dT%H:%M:%S-%Z") %>"><%= link_to time_ago_in_words(post.created_at), post %> ago</time>.
+	Posted by <%= link_to post.user.name, post.user %> <time datetime="<%= post.created_at.strftime("%Y-%m-%dT%H:%M:%S%Z") %>"><%= link_to time_ago_in_words(post.created_at), post %> ago</time>.
 </p>
 <%= render 'shared/write_up', write_up: post.write_up, summary: summary, post: post %>
