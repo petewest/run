@@ -1,5 +1,13 @@
 <div class="write_up">
-	<% r=RedCloth.new(write_up, [:sanitize_html])
+	<% if summary
+	     ommit=%Q{["... read more":#{url_for(post)}]}
+	     split=write_up.split(writeup_break)
+	     text=split.first
+	     text+=ommit if split.length>1
+	   else
+	     text=write_up.gsub(writeup_break,"")
+	   end %>
+	<% r=RedCloth.new(text, [:sanitize_html])
 	r.extend RedclothExtensions
 	%>
 	<%=r.to_html.html_safe%>

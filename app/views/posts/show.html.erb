@@ -1,6 +1,6 @@
 <% provide(:title, @post.title) %>
 <h1><%= @post.title %></h1>
-<%= render @post %>
+<%= render @post, summary: false %>
 
 <% render "shared/gmap_includes" %>
 

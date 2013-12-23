@@ -1,9 +1,10 @@
+<% summary=true if summary.nil? %>
 <div class="row">
 	<div class="col-md-1">
 		<%= gravatar_for post.user %>
 	</div>
 	<div class="col-md-11">
-		<%= render 'shared/post_item', post: post  %>
+		<%= render 'shared/post_item', post: post, summary: summary  %>
 	</div>
 </div>
 

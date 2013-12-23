@@ -64,7 +64,7 @@ class PostsController < ApplicationController
   
   def preview
     #We only need the partial here, as it's an ajax request to a div
-    render partial: 'shared/write_up', locals: {write_up: params[:write_up]}, layout: false
+    render partial: 'shared/write_up', locals: {write_up: params[:write_up], summary: false}, layout: false
   end
   
   private

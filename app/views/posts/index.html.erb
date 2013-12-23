@@ -4,7 +4,7 @@
 <%= current_category ? current_category.name : 'Runs' %>
 </h1>
 <% if @posts.any? %>
-   <%= render @posts %>
+   <%= render @posts, locals: {summary: true} %>
 <% else %>
 <h2>Sorry, no posts found<%= " in #{current_category.name}" if current_category %></h2>
 <% end%>
