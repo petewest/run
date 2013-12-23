@@ -63,7 +63,7 @@ class UsersController < ApplicationController
   end
   #Paramaters we're allowed to change through edit (without requiring password confirmation)
   def edit_user_params
-    params.require(:user).permit(:name, :email, :gravatar_email, :facebook_id)
+    params.require(:user).permit(:name, :email, :gravatar_email, :facebook_id, :google_plus)
   end
   def correct_user
     @user = User.find(params[:id])

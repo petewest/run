@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131219164655) do
+ActiveRecord::Schema.define(version: 20131223120824) do
 
   create_table "activities", force: true do |t|
     t.datetime "start_time"
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 20131219164655) do
     t.datetime "updated_at"
     t.string   "password_digest"
     t.string   "facebook_id"
+    t.string   "google_plus"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
