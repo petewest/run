@@ -1,9 +1,6 @@
 <div class="write_up">
 	<% if summary
-	     ommit=%Q{["... read more":#{url_for(post)}]}
-	     split=write_up.split(writeup_break)
-	     text=split.first
-	     text+=ommit if split.length>1
+		text=write_up_summary(post)
 	   else
 	     text=write_up.gsub(writeup_break,"")
 	   end %>
