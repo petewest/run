@@ -2,7 +2,7 @@
 <div class="row">
 	<div class="col-md-1">
 		<%= gravatar_for post.user %>
-		<%= link_to "Google plus", post.user.google_plus if post.user.google_plus && !summary %>
+		<%= link_to image_tag("//ssl.gstatic.com/images/icons/gplus-32.png", class: "social", target: "_blank"), "https://plus.google.com/#{post.user.google_plus}?rel=author" if post.user.google_plus && !summary %>
 	</div>
 	<div class="col-md-11">
 		<%= render 'shared/post_item', post: post, summary: summary  %>
