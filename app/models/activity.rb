@@ -7,6 +7,8 @@ class Activity < ActiveRecord::Base
   belongs_to :user
   belongs_to :activity_type
   
+  default_scope -> { order('start_time DESC')}
+  
   private
   def create_polyline
     self.polyline=Polylines::Encoder.encode_points(JSON::parse(lat_long_series).select {|x| x!=[nil,nil] }) if lat_long_series
