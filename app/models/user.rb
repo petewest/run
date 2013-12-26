@@ -11,8 +11,11 @@ class User < ActiveRecord::Base
     
   validates :name, presence: true, length: {maximum: 50}
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z/i
+  VALID_GOOGLE_PLUS_REGEX=/\A(\d+|[+]\w+)\z/
   validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
   validates :gravatar_email, presence: true, format: { with: VALID_EMAIL_REGEX }
+  
+  validates :google_plus, format: { with: VALID_GOOGLE_PLUS_REGEX }, allow_blank: true
     
   has_secure_password
   validates :password, length: { minimum: 6 }, if: :check_password?
