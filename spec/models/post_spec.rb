@@ -20,7 +20,6 @@ describe Post do
   end
   
   describe "stub" do
-    before {@post.save}
     subject {@post.stub}
     it {should_not be_empty}
     it {should eq @post.title.parameterize}
