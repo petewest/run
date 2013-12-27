@@ -20,6 +20,9 @@ class User < ActiveRecord::Base
   has_secure_password
   validates :password, length: { minimum: 6 }, if: :check_password?
 
+  def to_param
+    "#{id} #{name}".parameterize
+  end
 
   private
   def check_password?

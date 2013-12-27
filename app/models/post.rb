@@ -6,6 +6,10 @@ class Post < ActiveRecord::Base
   #set the default sort order 
   default_scope -> { order('created_at DESC')}
   
+  def to_param
+    "#{id} #{title}".parameterize
+  end
+  
   belongs_to :user
   belongs_to :category
 end
