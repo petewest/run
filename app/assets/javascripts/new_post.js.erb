@@ -92,6 +92,8 @@ function add_new_post_button_handlers() {
 			var $preview=$jq('#write_up_preview');
 			$preview.html(response);
 			$preview.show();
+			//Move the window down to the preview pane
+			$jq('html, body').animate({scrollTop: $preview.offset().top}, 500)
 		},'html');
 	});
 	
