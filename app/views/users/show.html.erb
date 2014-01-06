@@ -24,8 +24,11 @@
 		</div>
 	</div>
 	<div class="col-md-9">
+		Posts:
 		<% if @user_posts.any? %>
-		<%= render partial: 'shared/post_feed', collection: @user_posts %>
+		<ul class="post_headers">
+		<%= render partial: 'post_headers', collection: @user_posts %>
+		</ul>
 		<%= will_paginate @user_posts %>
 		<% end %>
 	</div>
