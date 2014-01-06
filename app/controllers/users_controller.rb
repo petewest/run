@@ -46,9 +46,10 @@ class UsersController < ApplicationController
     exit='edit'
     if params[:user][:password]
       exit='change_password'
+      @user=current_user
       if !current_user.authenticate(params[:user][:old_password])
         flash.now[:danger]="Old password is incorrect"
-        render 'change_password'
+        render exit
         return
       end
     end
@@ -83,7 +84,7 @@ class UsersController < ApplicationController
     redirect_to(root_url) unless (current_user?(@user))
   end
   def correct_user_or_admin
-    @user = User.find(params[:id])
+    @user = User.find_by(id: params[:id])
     redirect_to(root_url) unless (is_admin? || current_user?(@user))
   end
 end

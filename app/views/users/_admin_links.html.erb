@@ -11,6 +11,7 @@
 
 | <%= link_to 'edit', edit_user_path(user) %>
 | <%= link_to 'manage sessions', user_sessions_path(user) %>
+| <%= link_to 'change password', change_password_user_path(user) %>
 <% unless current_user?(user)%>
 | <%= link_to 'delete', user, method: :delete, data: {confirm: "Are you sure?"} %>
 <% end %>

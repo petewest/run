@@ -11,6 +11,9 @@ Run::Application.routes.draw do
   resources :users do
     resources :sessions, only: [:index, :destroy]
     resources :activities, only: [:index]
+    member do
+      get 'change_password'
+    end
   end
     
   resources :sessions, only: [:new, :create, :destroy]
