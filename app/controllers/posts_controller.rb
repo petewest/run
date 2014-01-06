@@ -7,9 +7,9 @@ class PostsController < ApplicationController
 
   def index
     if current_category
-      @posts=current_category.posts.where(draft: false).includes(:user).page(params[:page])
+      @posts=current_category.posts.not_draft.includes(:user).page(params[:page])
     else
-      @posts=Post.where(draft:false).includes(:user).page(params[:page])
+      @posts=Post.not_draft.includes(:user).page(params[:page])
     end
     respond_to do |format|
       format.html

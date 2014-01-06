@@ -5,7 +5,9 @@ class Post < ActiveRecord::Base
   validates :title, presence: true, length: {minimum: 4}
   
   #set the default sort order 
-  default_scope -> { order('created_at DESC')}
+  default_scope -> { order('created_at DESC') }
+  
+  scope :not_draft, -> { where(draft: false) }
   
   def to_param
     "#{id} #{stub}".parameterize

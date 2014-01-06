@@ -10,7 +10,7 @@ class UsersController < ApplicationController
     if current_user?(@user)
       @user_posts = @user.posts.includes(:user).paginate(page: params[:page])
     else
-      @user_posts = @user.posts.where(draft:false).includes(:user).paginate(page: params[:page])
+      @user_posts = @user.posts.not_draft.includes(:user).paginate(page: params[:page])
     end
   end
   
