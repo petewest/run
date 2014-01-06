@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :signed_in_user, only: [:edit, :update, :index]
+  before_action :signed_in_user, only: [:edit, :update, :index, :change_password]
   before_action :correct_user_or_admin, only: [:edit, :update]
   before_action :admin_user, only: [:destroy]
   def new
@@ -42,12 +42,22 @@ class UsersController < ApplicationController
   end
   
   def update
+    # Exit point
+    exit='edit'
+    if params[:user][:password]
+      exit='change_password'
+      if !current_user.authenticate(params[:user][:old_password])
+        flash.now[:danger]="Old password is incorrect"
+        render 'change_password'
+        return
+      end
+    end
     if @user.update_attributes(edit_user_params)
       flash[:success]="Profile changed"
       redirect_to @user
     else
       flash.now[:danger]="Error saving profile"
-      render 'edit'
+      render exit
     end
   end
   
@@ -57,13 +67,16 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
-  private
+  def change_password
+  end
+  
+  private  
   def user_params
     params.require(:user).permit(:name, :email, :password, :password_confirmation, :gravatar_email)
   end
-  #Paramaters we're allowed to change through edit (without requiring password confirmation)
+  #Paramaters we're allowed to change through edit
   def edit_user_params
-    params.require(:user).permit(:name, :email, :gravatar_email, :facebook_id, :google_plus)
+    params.require(:user).permit(:name, :email, :gravatar_email, :facebook_id, :google_plus, :password, :password_confirmation)
   end
   def correct_user
     @user = User.find(params[:id])

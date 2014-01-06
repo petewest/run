@@ -3,6 +3,7 @@ Run::Application.routes.draw do
   match "/signup", to: 'users#new', via: 'get'
   match "/signin", to: 'sessions#new', via: 'get'
   match "/signout", to: 'sessions#destroy', via: 'delete'
+  match "/change_password", to: 'users#change_password', via: 'get'
   resources :categories
   resources :posts
   resources :activity_types, only: [:index, :new, :create, :destroy, :update, :edit]

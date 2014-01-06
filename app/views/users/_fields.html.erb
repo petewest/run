@@ -10,12 +10,4 @@
 <%= f.text_field :email, placeholder: "example@example.com", class: "form-control" %>
 </div>
 
-<div class="form-group">
-<%= f.label :password %>
-<%= f.password_field :password, class: "form-control" %>
-</div>
-
-<div class="form-group">
-<%= f.label :password_confirmation, "Confirmation" %>
-<%= f.password_field :password_confirmation, class: "form-control" %>
-</div>
+<%= render 'password_fields', f: f %>
