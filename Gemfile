@@ -31,6 +31,7 @@ gem 'RedCloth'
 gem 'polylines'
 gem 'paperclip'
 gem 'aws-sdk'
+gem 'highcharts-rails', '3.0.9'
 
 group :doc do
   gem 'sdoc', '0.3.20', require: false
