@@ -21,7 +21,7 @@ time_series=JSON::parse(@activity.time_series).map{ |d| DateTime.parse(d).strfti
 # but only when the item itself isn't nil
 series.each do |name, spec|
 	if distance_series
-		spec[:graph]=distance_series.zip(spec[:input]).select{|item| item[1]}
+		spec[:graph]=distance_series.zip(spec[:input]).select{|item| item[0] && item[1]}
 	else
 		spec[:graph]=time_series.zip(spec[:input]).select{|item| item[1]}
 	end
@@ -50,9 +50,15 @@ jQuery('#graph_<%= @activity.id %>').highcharts({
 	],
 	xAxis: {
 		<% if distance_series %>
-		type: 'linear'
+		type: 'linear',
+		title: {
+			text: 'Distance'
+		}
 		<% else %>
-		type: 'datetime'
+		type: 'datetime',
+		title: {
+			text: 'Time'
+		}
 		<% end %>
 	},
 	yAxis: [<% series.each_value.with_index do |s,i| %><%= ", " if i>0 %>{
