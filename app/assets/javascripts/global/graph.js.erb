@@ -3,16 +3,16 @@
  environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
 
 
-function add_elevation($canvas) {
-	//add elevation chart to jquery object(s)
+function add_graph($canvas) {
+	//add chart to jquery object(s)
 	$canvas.each(function(index) {
 		var canvas = this;
 
-		var activity_id = canvas.id.replace("elevation_", "");
+		var activity_id = canvas.id.replace("graph_", "");
 		jQuery.ajax({
-			url: "<%= elevation_path %>",
+			url: "<%= graph_path %>",
 			data: {
-				id: activity_id,
+				id: activity_id
 			},
 			dataType: 'script'
 		});

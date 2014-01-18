@@ -273,11 +273,11 @@ input {
 	height: 400px;
 }
 
-.elevation_graph_container {
+.graph_container {
 	@include post_embed;
 }
 
-.elevation_graph_canvas {
+.graph_canvas {
 	width: 400px;
 	height: 200px;
 }

@@ -24,13 +24,13 @@ module RedclothExtensions
     html+=%Q{</div>}
   end
   
-  def elevation(opts)
+  def graph(opts)
     args=match_format.match(opts[:text])
     return opts[:text] if args.nil?
-    css="elevation_graph_container"
+    css="graph_container"
     css+=align(args[:align])
-    html=%Q{<div class="#{css}" id="elevation_container_#{args[:id]}">}
-    html+=elevation_for_activity(args[:id])
+    html=%Q{<div class="#{css}" id="graph_container_#{args[:id]}">}
+    html+=graph_for_activity(args[:id])
     html+=%Q{</div>}
   end
   

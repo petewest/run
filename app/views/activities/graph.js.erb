@@ -1,0 +1,26 @@
+<% 
+hrs=JSON::parse(@activity.hr_series)
+hr_series=JSON::parse(@activity.time_series).map.with_index do |d,i|
+	time_code=DateTime.parse(d).strftime('%Q').to_i
+	hr=hrs[i].to_i
+	[time_code, hr]
+end
+
+%>
+jQuery('#graph_<%= @activity.id %>').highcharts({
+	chart: {
+		type: 'area'
+	},
+	xAxis: {
+		type: 'datetime'
+	},
+	yAxis: {
+		title: {
+			text: 'bpm'
+		}
+	},
+	series: [{
+		name: 'heart rate',
+		data: <%= hr_series %>
+	}]	
+});

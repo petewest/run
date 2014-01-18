@@ -41,10 +41,10 @@ module ActivitiesHelper
     html+=%Q{</div></div>}
   end
   
-  def elevation_for_activity(id, options={})
+  def graph_for_activity(id, options={})
     opts=" "
     options.each {|k,v| opts+=%Q{#{k.to_s}="#{v}" } }
-    html=%Q{<div class="elevation_graph_canvas" id="elevation_#{id}"#{opts}></div>}
+    html=%Q{<div class="graph_canvas" id="graph_#{id}"#{opts}></div>}
   end
   
 end

@@ -19,7 +19,7 @@ class ActivitiesController < ApplicationController
     end
   end
   
-  def elevation
+  def graph
     begin
       @activity=Activity.find(params[:id]);
     rescue ActiveRecord::RecordNotFound => e
