@@ -325,6 +325,10 @@ GarminDeviceControlDemo.prototype = {
 		var lat_long_series=getLatLongSeries(activity);
 		
 		var heart_rate_series=getHeartRateSeries(activity);
+		
+		var elevation_series=getElevationSeries(activity);
+		
+		var distance_series=getDistanceSeries(activity);
 
 		// loop through each series in the activity
 		for (var j = 0; j < series.length; j++) {
@@ -341,6 +345,8 @@ GarminDeviceControlDemo.prototype = {
 			time_series: JSON.stringify(time_series),
 			lat_long_series: JSON.stringify(lat_long_series),
 			hr_series: JSON.stringify(heart_rate_series),
+			elevation_series: JSON.stringify(elevation_series),
+			distance_series: JSON.stringify(distance_series),
 			activity_type: activity.getAttribute("activitySport"),
 			internal_id: this.uploadPendingQueue[activity.getAttribute("activityName")]
 		};
@@ -481,6 +487,17 @@ function getTimeSeries(activity) {
 	}
 	return series_array;
 }
+
+function getElevationSeries(activity) {
+	var series=activity.getHistorySeries();
+	return getSeriesArrayFloat(series, Garmin.Sample.MEASUREMENT_KEYS.elevation);
+}
+
+function getDistanceSeries(activity) {
+	var series=activity.getHistorySeries();
+	return getSeriesArrayFloat(series, Garmin.Sample.MEASUREMENT_KEYS.distance);
+}
+
 
 function getHeartRateSeries(activity) {
 	var series=activity.getHistorySeries();

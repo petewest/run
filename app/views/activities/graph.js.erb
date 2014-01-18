@@ -1,9 +1,14 @@
-<% 
-hrs=JSON::parse(@activity.hr_series)
-hr_series=JSON::parse(@activity.time_series).map.with_index do |d,i|
+<%
+hr_series=[]
+elevation_series=[]
+hrs=JSON::parse(@activity.hr_series) if @activity.hr_series
+elevations=JSON::parse(@activity.elevation_series) if @activity.elevation_series
+JSON::parse(@activity.time_series).each.with_index do |d,i|
 	time_code=DateTime.parse(d).strftime('%Q').to_i
-	hr=hrs[i].to_i
-	[time_code, hr]
+	hr=hrs[i] if hrs
+	elevation=elevations[i] if elevations
+	hr_series<<[time_code, hr] if hr
+	elevation_series<<[time_code, elevation] if elevation
 end
 
 %>
@@ -11,16 +16,28 @@ jQuery('#graph_<%= @activity.id %>').highcharts({
 	chart: {
 		type: 'area'
 	},
+	colors: [
+		'#dd2222',
+		'#444444'
+	],
 	xAxis: {
 		type: 'datetime'
 	},
-	yAxis: {
+	yAxis: [{
 		title: {
 			text: 'bpm'
-		}
-	},
+		},
+		opposite: true
+	}, {
+		title: { text: 'metres'}
+	}],
 	series: [{
+		yAxis: 0,
 		name: 'heart rate',
 		data: <%= hr_series %>
-	}]	
+	}<% if elevation_series.any? %>,{
+		yAxis: 1,
+		name: 'elevation',
+		data: <%= elevation_series %>
+	}<%end%>]	
 });

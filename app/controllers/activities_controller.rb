@@ -96,7 +96,7 @@ class ActivitiesController < ApplicationController
   private
   def new_activity_params
     params.permit(:distance, :duration, :start_time, :height_gain, :polyline, :elevation_series,
-    :hr_series, :pace_series, :gpx, :lat_long_series, :time_series)
+    :hr_series, :pace_series, :gpx, :lat_long_series, :time_series, :distance_series)
   end
   def edit_activity_params
     params.require(:activity).permit(:activity_type_id)
