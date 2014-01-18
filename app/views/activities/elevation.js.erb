@@ -1,0 +1,20 @@
+jQuery('#elevation_<%= @activity.id %>').highcharts({
+	chart: {
+		type: 'area'
+	},
+	title: {
+		text: 'Elevation'
+	},
+	xAxis: {
+		categories: ['Apples', 'Bananas', 'Oranges']
+	},
+	yAxis: {
+		title: {
+			text: 'metres'
+		}
+	},
+	series: [{
+		name: 'Elevation',
+		data: [1, 0, 4]
+	}]	
+});

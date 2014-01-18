@@ -1,0 +1,21 @@
+<%
+# this little bit of code allows root_path helpers to be used (for ajax queries)
+ environment.context_class.instance_eval { include Rails.application.routes.url_helpers } %>
+
+
+function add_elevation($canvas) {
+	//add elevation chart to jquery object(s)
+	$canvas.each(function(index) {
+		var canvas = this;
+
+		var activity_id = canvas.id.replace("elevation_", "");
+		jQuery.ajax({
+			url: "<%= elevation_path %>",
+			data: {
+				id: activity_id,
+			},
+			dataType: 'script'
+		});
+		
+	});
+}

@@ -28,6 +28,8 @@ Run::Application.routes.draw do
 
   match '/activity_check', to: 'activities#check_upload', via: 'get', defaults: {format: 'json'}
   match '/map', to: 'activities#show', via: 'get', defaults: {format: 'json'}, as: 'map'
+  
+  match '/elevation', to: 'activities#elevation', via: 'get', as: 'elevation'
 
   #Add google site verification
   get "/#{Rails.application.config.google_verification}.html",

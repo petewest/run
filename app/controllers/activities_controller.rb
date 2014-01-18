@@ -19,6 +19,19 @@ class ActivitiesController < ApplicationController
     end
   end
   
+  def elevation
+    begin
+      @activity=Activity.find(params[:id]);
+    rescue ActiveRecord::RecordNotFound => e
+      return
+    end
+    respond_to do |format|
+      format.js do
+        render
+      end
+    end
+  end
+  
   def create
     respond_to do |format|
       format.json do
