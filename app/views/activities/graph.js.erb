@@ -1,7 +1,11 @@
 <%
+
+max_points=200
+scale_factor=1
+
 series={}
 series[:elevation]={
-	input: JSON::parse(@activity.elevation_series),
+	input: JSON::parse(@activity.elevation_series).map{|e| e.round(2) if e},
 	color: '#666666',
 	name: "Elevation",
 	unit: "metres"
@@ -13,18 +17,22 @@ series[:hr]={
 	unit: "bpm"
 } if @activity.hr_series
 
-distance_series=JSON::parse(@activity.distance_series) if @activity.distance_series
+distance_series=JSON::parse(@activity.distance_series).map{|d| d.to_i if d} if @activity.distance_series
 
 time_series=JSON::parse(@activity.time_series).map{ |d| DateTime.parse(d).strftime("%Q").to_i }	
 
+if distance_series
+	x_axis=distance_series
+else
+	x_axis=time_series
+end
+
+scale_factor=[x_axis.count/max_points,1].max.to_i
+
 # Join each input up to the time_series array using zip to get our plottable array
 # but only when the item itself isn't nil
-series.each do |name, spec|
-	if distance_series
-		spec[:graph]=distance_series.zip(spec[:input]).select{|item| item[0] && item[1]}
-	else
-		spec[:graph]=time_series.zip(spec[:input]).select{|item| item[1]}
-	end
+series.each_value do |spec|
+	spec[:graph]=x_axis.zip(spec[:input]).select.with_index{|item,index| index%scale_factor==0 && item[0] && item[1]}
 end
 
 %>
@@ -42,12 +50,8 @@ jQuery('#graph_<%= @activity.id %>').highcharts({
 			}
 		}
 	},
-	colors: [
-		<% series.each_value.with_index do |v,i| %>
-			<%= ", " if i>0 %>
-			'<%= v[:color] %>'
-		<% end %>
-	],
+	colors: <%= series.map{ |k,v| v[:color]}.to_json.html_safe %>
+	,
 	xAxis: {
 		<% if distance_series %>
 		type: 'linear',
