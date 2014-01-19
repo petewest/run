@@ -37,7 +37,8 @@ class Activity < ActiveRecord::Base
   
   private
   def simplify
-    distance_threshold=50
+    #reduce the line to 500 points, by using distance / 500 to get our threshold
+    distance_threshold=distance/500
     if distance_series
       distance_array=JSON::parse(distance_series)
       self.simple_distance=Activity.reduce_by_distance(distance_array, distance_array, distance_threshold)
