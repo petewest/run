@@ -1,1 +1,7 @@
-<li><a href='#' id='activity_<%= activity_list.id %>' class='activity_item'><%= activity_list.start_time %></a></li>
+<li>
+	<a href='#' id='activity_<%= activity_list.id %>' class='activity_item'><%= activity_list.start_time %></a>
+	<div class="btn-group activity_buttons">
+		<button name="map" id="map_button_<%= activity_list.id %>" class="btn btn-default">Map</button>
+		<button name="graph" id="graph_button_<%= activity_list.id %>" class="btn btn-default">Graph</button>
+	</div>
+</li>

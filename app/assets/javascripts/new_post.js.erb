@@ -111,6 +111,15 @@ function add_new_post_button_handlers() {
 		var $write_up=$jq('#write_up_input');
 		add_text_at_cursor($write_up, "\n\nmap. " + activity_id + "\n\n")
 	});
+	
+	$jq('#activity_list').on("click", "button", function(event){
+		event.preventDefault();
+		//find the db id from the dom id
+		var activity_id=this.id.match(/(\w*)_button_(\d*)/);
+		var $write_up=$jq('#write_up_input');
+		add_text_at_cursor($write_up, "\n\n"+ activity_id[1] +". " + activity_id[2] + "\n\n")
+	});
+	
 
 
 	$jq("#image_list").on("click", "a", function(event) {

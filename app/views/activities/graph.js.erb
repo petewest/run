@@ -1,65 +1,3 @@
-<%
-
-max_points=200
-scale_factor=1
-
-series={}
-
-if @activity.simple_elevation || @activity.elevation_series
-	series[:elevation]={
-		color: '#666666',
-		name: "Elevation",
-		unit: "metres"
-	}
-	if  @activity.simple_elevation
-		series[:elevation][:input]=@activity.simple_elevation.map{|e| e.round(2) if e }
-	else
-		series[:elevation][:input]=JSON::parse(@activity.elevation_series).map{|e| e.round(2) if e }
-	end
-end
-
-if @activity.simple_hr || @activity.hr_series
-	series[:hr]={
-		color: '#dd2222',
-		name: "Heart rate",
-		unit: "bpm"
-	}
-	if @activity.simple_hr
-		series[:hr][:input]=@activity.simple_hr
-	else
-		series[:hr][:input]=JSON::parse(@activity.hr_series)
-	end
-end
-
-x_axis={}
-
-if @activity.simple_distance || @activity.distance_series
-	x_axis[:title]='Distance'
-	x_axis[:type]='linear'
-	if @activity.simple_distance
-		x_axis[:series]=@activity.simple_distance.map{|d| d.to_i if d}
-	else
-		x_axis[:series]=JSON::parse(@activity.distance_series).map{|d| d.to_i if d}
-	end
-else	
-	x_axis[:title]='Time'
-	x_axis[:type]='datetime'
-	if @activity.simple_time
-		x_axis[:series]=@activity.simple_time
-	else
-		x_axis[:series]=JSON::parse(@activity.time_series).map{ |d| DateTime.parse(d).strftime("%Q").to_i }
-	end
-end
-
-scale_factor=[x_axis.count/max_points,1].max.to_i
-
-# Join each input up to the time_series array using zip to get our plottable array
-# but only when the item itself isn't nil
-series.each_value do |spec|
-	spec[:graph]=x_axis[:series].zip(spec[:input]).select.with_index{|item,index| index%scale_factor==0 && item[0] && item[1]}
-end
-
-%>
 jQuery('#graph_<%= @activity.id %>').highcharts({
 	chart: {
 		type: 'area'
@@ -74,15 +12,15 @@ jQuery('#graph_<%= @activity.id %>').highcharts({
 			}
 		}
 	},
-	colors: <%= series.map{ |k,v| v[:color]}.to_json.html_safe %>
+	colors: <%= @series.map{ |k,v| v[:color]}.to_json.html_safe %>
 	,
 	xAxis: {
-		type: "<%= x_axis[:type] %>",
+		type: "<%= @x_axis[:type] %>",
 		title: {
-			text: '<%= x_axis[:title] %>'
+			text: '<%= @x_axis[:title] %>'
 		}
 	},
-	yAxis: [<% series.each_value.with_index do |s,i| %><%= ", " if i>0 %>{
+	yAxis: [<% @series.each_value.with_index do |s,i| %><%= ", " if i>0 %>{
 		title: {
 			text: '<%= s[:unit] %>'
 		},
@@ -91,7 +29,7 @@ jQuery('#graph_<%= @activity.id %>').highcharts({
 		<%= ", opposite: true" if i.odd? %>
 	}<% end %>
 	],
-	series: [<% series.each_value.with_index do |s,i| %><%= ',' if i>0 %>{
+	series: [<% @series.each_value.with_index do |s,i| %><%= ',' if i>0 %>{
 		yAxis: <%= i %>,
 		name: '<%= s[:name] %>',
 		data: <%= s[:graph] %>

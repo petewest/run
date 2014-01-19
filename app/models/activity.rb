@@ -18,7 +18,6 @@ class Activity < ActiveRecord::Base
   
   #Function to reduce the number of points in point_series
   #based on the distance_series delta being over threshold
-  
   def Activity.reduce_by_distance(distance_series, point_series, threshold)
     last_point=0
     point_series.select.with_index do |point, i|
