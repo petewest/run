@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140118185515) do
+ActiveRecord::Schema.define(version: 20140119110940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,11 @@ ActiveRecord::Schema.define(version: 20140118185515) do
     t.datetime "updated_at"
     t.text     "lat_long_series"
     t.text     "distance_series"
+    t.text     "simple_distance"
+    t.text     "simple_lat_long"
+    t.text     "simple_hr"
+    t.text     "simple_elevation"
+    t.text     "simple_time"
   end
 
   add_index "activities", ["user_id", "start_time"], name: "index_activities_on_user_id_and_start_time", using: :btree

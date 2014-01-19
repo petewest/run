@@ -46,5 +46,5 @@ module ActivitiesHelper
     options.each {|k,v| opts+=%Q{#{k.to_s}="#{v}" } }
     html=%Q{<div class="graph_canvas" id="graph_#{id}"#{opts}></div>}
   end
-  
+    
 end
