@@ -23,11 +23,11 @@ en:
   hello: "Hello world"
   distance:
     centi:
-      one: "centimeter"
-      other: "centimeters"
+      one: "centimetre"
+      other: "centimetres"
     unit:
-      one: "meter"
-      other: "meters"
+      one: "metre"
+      other: "metres"
     thousand:
-      one: "kilometer"
-      other: "kilometers"
+      one: "kilometre"
+      other: "kilometres"
