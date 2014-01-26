@@ -136,13 +136,21 @@ class ActivitiesController < ApplicationController
   end
   
   def check_upload
-    #TODO allow requests for multiple start times
     #check if the user has uploaded this activity already
-    @activity=current_user.activities.find_by_start_time(params[:start_time])
+    answer=[]
+    if params[:batch]
+      JSON::parse(params[:batch]).each do |a|
+        activity=current_user.activities.find_by(start_time: a["start_time"])
+        if (activity)
+          answer.push({id: activity.id, start_time: activity.start_time, internal_id: a["internal_id"]})
+        else
+          answer.push({id: -1, internal_id: a["internal_id"]})
+        end
+      end
+    end
     respond_to do |format|
       format.json do
-        render json: {id: @activity.id, start_time: @activity.start_time, internal_id: params[:internal_id]} unless @activity.nil?
-        render json: {id: -1, internal_id: params[:internal_id]} if @activity.nil?
+        render json: answer
       end
     end
   end

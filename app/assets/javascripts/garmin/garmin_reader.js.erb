@@ -412,28 +412,43 @@ GarminDeviceControlDemo.prototype = {
 	},
 	
 	modify_upload_status_icon: function(json){
-		var $upload_icon=$jq('#'+this.upload_prefix+json.internal_id);
-		var $checkbox=$jq('#'+this.checkbox_prefix+json.internal_id);
-		$upload_icon.removeClass();
-		//if we get an id value of -1 it means we haven't uploaded this item yet
-		if (json.id!=-1){
-			$upload_icon.addClass(this.upload_icon_success);
-			//tell the checkbox we've got it
-			$checkbox[0].checked=true;
-			//and disable it so we don't try again
-			//([0] makes it operate direct on the DOM object)
-			$checkbox[0].disabled=true;
-		} else {
-			$upload_icon.addClass(this.upload_icon_no);
-			$checkbox[0].disabled=false;
-			$checkbox[0].checked=false;
-		}
+		var controller=this;
+		jQuery.each(json, function(i, val) {
+			var $upload_icon=$jq('#'+controller.upload_prefix+val.internal_id);
+			var $checkbox=$jq('#'+controller.checkbox_prefix+val.internal_id);
+			$upload_icon.removeClass();
+			//if we get an id value of -1 it means we haven't uploaded this item yet
+			if (val.id!=-1){
+				$upload_icon.addClass(controller.upload_icon_success);
+				//tell the checkbox we've got it
+				$checkbox[0].checked=true;
+				//and disable it so we don't try again
+				//([0] makes it operate direct on the DOM object)
+				$checkbox[0].disabled=true;
+			} else {
+				$upload_icon.addClass(controller.upload_icon_no);
+				$checkbox[0].disabled=false;
+				$checkbox[0].checked=false;
+			}
+		});
 	},
 	// fires off requests to the DB to find out which items have been uploaded
 	_findUploadStatus: function() {
-		for (var i=0; i<this.queryUploadStatusQueue.length; i++) {
-			this._findUploadStatusForActivity(this.queryUploadStatusQueue[i]);
-		}
+		//combine requests in to multiple batches
+		var requests=[];
+		//with a maximum uri request length
+		var max_length=1000;
+		jQuery.each(this.queryUploadStatusQueue, function(i, val){
+			var length=JSON.stringify(requests).length+JSON.stringify(val).length;
+			var counter=(length/max_length).floor();
+			if (!requests[counter]) requests[counter]=[];
+			requests[counter].push(val);
+		});
+		var controller=this;
+		//fire off a request for each batch
+		jQuery.each(requests, function(i, val) {
+			controller._findUploadStatusForActivity({batch: JSON.stringify(val)});
+		});
 	},
 
 	/** Selects all checkboxes in the activity directory, which selects all activities to be read from the device.
