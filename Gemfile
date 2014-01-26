@@ -4,7 +4,6 @@ ruby '2.1.0'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.2'
 gem 'bootstrap-sass', '3.0.3.0'
-gem 'jquery-ui-sass-rails', '4.0.3.0'
 gem 'bcrypt-ruby', '3.1.2'
 gem "jquery-fileupload-rails"
 

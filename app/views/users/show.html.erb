@@ -17,8 +17,8 @@
 			<div class="summary">
 				Summary:
 				<ul>
-					<li><abbr title="Total distance"><span class="glyphicon glyphicon-resize-horizontal"></span></abbr> <%= number_to_human(@user.activities.sum(:distance), units: :distance) %></li>
-					<li><abbr title="Total time"><span class="glyphicon glyphicon-time"></span></abbr> <%= distance_of_time_in_words(@user.activities.sum(:duration).seconds) %></li>
+					<li><span data-title="Total distance" class="enable_tooltip"><span class="glyphicon glyphicon-resize-horizontal"></span> <%= number_to_human(@user.activities.sum(:distance), units: :distance) %></span></li>
+					<li><span data-title="Total time" class="enable_tooltip"><span class="glyphicon glyphicon-time"></span> <%= distance_of_time_in_words(@user.activities.sum(:duration).seconds) %></span></li>
 				</ul>
 			</div>
 		</div>
@@ -36,3 +36,7 @@
 
 
 <%= render 'shared/gmap_includes' %>
+
+<script>
+jQuery('body').tooltip({selector: '.enable_tooltip'});
+</script>
