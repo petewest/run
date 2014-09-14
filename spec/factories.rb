@@ -12,11 +12,11 @@ FactoryGirl.define do
   end
   factory :category do
     name "Race"
-    stub "race"
+    stub { Faker::Internet.slug.truncate(19) }
     sort_order 0
   end
   factory :post do
-    title "Race day!"
+    sequence(:title) { |n| "Race post #{n}" }
     write_up "Write up goes here! Exciting!"
     user
     category
