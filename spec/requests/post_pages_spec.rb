@@ -40,4 +40,25 @@ describe "Post pages" do
     end
   end
 
+  describe "visiting existing post" do
+    before do
+      @post = create(:post)
+    end
+    describe "as new visitor" do
+      it "should increment hit counter and impressions" do
+        expect { visit post_path(@post) }.to change(Hit, :count).by(1)
+        expect(Hit.last.impressions).to eq 1
+      end
+    end
+    describe "when re-visiting" do
+      before do
+        visit post_path(@post)
+      end
+      it "should increment impressions but not hits" do
+        expect { visit post_path(@post) }.to change(Hit, :count).by(0)
+        expect(Hit.last.impressions).to eq 2
+      end
+    end
+  end
+
 end

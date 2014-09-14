@@ -22,6 +22,7 @@ class PostsController < ApplicationController
   end
 
   def show
+    hit
   end
   
   def create
@@ -68,18 +69,23 @@ class PostsController < ApplicationController
   end
   
   private
-  def get_post_from_params
-    @post=Post.includes(:user).find(params[:id])
-  end
-  def post_params
-    params.require(:post).permit(:title, :write_up, :category_id, :draft, :facebook_comments)
-  end
-  def correct_user_or_admin
-    if current_user.admin?
-      @post=Post.find(params[:id])
-    else
-      @post=current_user.posts.find(params[:id])
+    def get_post_from_params
+      @post=Post.includes(:user).find(params[:id])
     end
-    redirect_to root_url if @post.nil?
-  end
+    def post_params
+      params.require(:post).permit(:title, :write_up, :category_id, :draft, :facebook_comments)
+    end
+    def correct_user_or_admin
+      if current_user.admin?
+        @post=Post.find(params[:id])
+      else
+        @post=current_user.posts.find(params[:id])
+      end
+      redirect_to root_url if @post.nil?
+    end
+
+    def hit
+      return if @post.nil?
+      @post.hits.find_or_initialize_by(ip_address: request.remote_ip.to_s).increment_impressions!
+    end
 end
