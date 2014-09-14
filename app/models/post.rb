@@ -12,7 +12,10 @@ class Post < ActiveRecord::Base
   def to_param
     "#{id} #{stub}".parameterize
   end
-  
+
+  ##
+  # Relationships
   belongs_to :user
   belongs_to :category
+  has_many :hits, as: :hittable
 end

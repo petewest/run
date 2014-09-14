@@ -13,6 +13,8 @@ describe Post do
   it {should respond_to(:title)}
   it {should respond_to(:write_up)}
   it {should respond_to(:stub)}
+  it {should respond_to(:hits)}
+  it {should respond_to(:hits_count)}
   
   describe "When title is empty" do
     before {@post.title=''}
@@ -31,6 +33,20 @@ describe Post do
       end
       it {should eq old_stub}
       it {should_not eq @post.title.parameterize}
+    end
+  end
+
+  describe "hits counter" do
+    subject { @post.hits_count }
+    it { should eq 0 }
+
+    describe "when hit" do
+      before do
+        create(:hit, hittable: @post)
+        @post.reload
+      end
+
+      it { should eq 1 }
     end
   end
   
