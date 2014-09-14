@@ -3,7 +3,7 @@ class Activity < ActiveRecord::Base
   validates :user_id, presence: true
   
   before_save :simplify
-  before_save :create_polyline
+  before_save :create_polyline, if: -> { simple_lat_long.present? || lat_long_series.present? }
   
   belongs_to :user
   belongs_to :activity_type
