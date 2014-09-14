@@ -36,17 +36,25 @@ describe Post do
     end
   end
 
-  describe "hits counter" do
-    subject { @post.hits_count }
-    it { should eq 0 }
+  describe "hits association" do
+    describe "counter cache" do
+      subject { @post.hits_count }
+      it { should eq 0 }
 
-    describe "when hit" do
-      before do
-        create(:hit, hittable: @post)
-        @post.reload
+      describe "when hit" do
+        before do
+          create(:hit, hittable: @post)
+          @post.reload
+        end
+
+        it { should eq 1 }
       end
+    end
 
-      it { should eq 1 }
+    it "will be empty up when destroyed" do
+      @hit = create(:hit, hittable: @post)
+      expect { @post.destroy }.to change{ Hit.count }.by(-1)
+      expect { @hit.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
   

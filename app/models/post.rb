@@ -17,5 +17,5 @@ class Post < ActiveRecord::Base
   # Relationships
   belongs_to :user
   belongs_to :category
-  has_many :hits, as: :hittable
+  has_many :hits, as: :hittable, dependent: :destroy
 end
