@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140119110940) do
+ActiveRecord::Schema.define(version: 20140914162654) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "activities", force: true do |t|
     t.datetime "start_time"
@@ -67,6 +70,17 @@ ActiveRecord::Schema.define(version: 20140119110940) do
   end
 
   add_index "categories", ["stub", "sort_order"], name: "index_categories_on_stub_and_sort_order", unique: true, using: :btree
+
+  create_table "hits", force: true do |t|
+    t.integer  "hittable_id"
+    t.string   "hittable_type"
+    t.string   "ip_address"
+    t.integer  "impressions"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "hits", ["hittable_id", "hittable_type"], name: "index_hits_on_hittable_id_and_hittable_type", using: :btree
 
   create_table "posts", force: true do |t|
     t.string   "title"

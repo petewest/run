@@ -31,4 +31,8 @@ FactoryGirl.define do
     activity_type
     user
   end
+  factory :hit do
+    sequence(:ip_address) { |n| "127.0.0.#{n}" }
+    association :hittable, factory: :post
+  end
 end
