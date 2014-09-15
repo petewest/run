@@ -72,6 +72,20 @@ describe "Post pages" do
       end
 
       it { should have_hit_counter }
+
+      describe "and clicking hit counter" do
+        let!(:other_hit) { create(:hit) }
+        before do
+          find("#hits_post_#{@post.id} a").click
+        end
+
+        it "should browse to embedded resource" do
+          expect(current_path).to eq post_hits_path(@post)
+        end
+
+        it { should_not have_selector("#hit_#{other_hit.id}") }
+        it { should have_selector("#hit_#{@post.reload.hits.first.id}") }
+      end
     end
 
     describe "as anonymous" do

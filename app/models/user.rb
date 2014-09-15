@@ -36,4 +36,5 @@ class User < ActiveRecord::Base
   has_many :posts, dependent: :destroy
   has_many :activities, dependent: :destroy
   has_many :attachments, dependent: :destroy
+  has_many :hits, through: :posts
 end

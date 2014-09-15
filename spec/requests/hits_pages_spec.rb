@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe "Hits" do
   let!(:hit) { create(:hit, impressions: 3) }
-  let(:redirected_to_root?) do
-    should have_title("Runs")
-    expect(current_path).to eq(root_path)
+  let(:redirected_to_sign_in?) do
+    should have_title("Sign in")
+    expect(current_path).to eq(signin_path)
   end
 
   subject { page }
@@ -14,19 +14,22 @@ describe "Hits" do
     end
 
     it "should redirect to root" do
-      redirected_to_root?
+      redirected_to_sign_in?
     end
   end
 
   describe "when signed in as non-admin" do
     before do
-      sign_in(create(:user))
+      @user = create(:user)
+      @posts = [create(:post, user: @user), create(:post)]
+      @hits = @posts.map { |p| create(:hit, hittable: p) }
+      sign_in(@user)
       visit hits_path
     end
 
-    it "should redirect to root" do
-      redirected_to_root?
-    end
+    it { should have_title("Hits") }
+    it { should have_selector("#hit_#{@hits.first.id}") }
+    it { should_not have_selector("#hit_#{@hits.second.id}") }
   end
 
   describe "when signed in as admin" do
