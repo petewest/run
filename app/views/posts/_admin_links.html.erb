@@ -1,5 +1,9 @@
 <div class="post_admin_right">
 	<ul class="post_admin">
+		<%= content_tag_for(:li, post, :hits) do %>
+			<%= pluralize(post.hits.size, "hit") %>
+		<% end %>
+
 		<li>
 			<%= link_to(edit_post_path(post)) do %>
 			<span class="glyphicon glyphicon-pencil" title="Edit"></span>

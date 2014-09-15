@@ -41,9 +41,14 @@ describe "Post pages" do
   end
 
   describe "visiting existing post" do
+    let(:have_hit_counter) do
+      have_selector("#hits_post_#{@post.id}")
+    end
+
     before do
       @post = create(:post)
     end
+
     describe "as new visitor" do
       it "should increment hit counter and impressions" do
         expect { visit post_path(@post) }.to change(Hit, :count).by(1)
@@ -58,6 +63,41 @@ describe "Post pages" do
         expect { visit post_path(@post) }.to change(Hit, :count).by(0)
         expect(Hit.last.impressions).to eq 2
       end
+    end
+
+    describe "as admin" do
+      before do
+        sign_in admin
+        visit post_path(@post)
+      end
+
+      it { should have_hit_counter }
+    end
+
+    describe "as anonymous" do
+      before do
+        visit post_path(@post)
+      end
+
+      it { should_not have_hit_counter }
+    end
+
+    describe "as author" do
+      before do
+        sign_in @post.user
+        visit post_path(@post)
+      end
+
+      it { should have_hit_counter }
+    end
+
+    describe "as user but not author or admin" do
+      before do
+        sign_in create(:user)
+        visit post_path(@post)
+      end
+
+      it { should_not have_hit_counter }
     end
   end
 
