@@ -1,0 +1,11 @@
+<%= content_tag_for(:tr, hit) do %>
+	<%= content_tag_for(:td, hit, :hittable) do %>
+		<%= link_to hit.hittable.title, hit.hittable %>
+	<% end %>
+	<%= content_tag_for(:td, hit, :ip) do %>
+		<%= hit.ip_address %>
+	<% end %>
+	<%= content_tag_for(:td, hit, :impressions) do %>
+		<%= hit.impressions %>
+	<% end %>
+<% end %>

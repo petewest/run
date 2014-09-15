@@ -1,0 +1,16 @@
+<% provide(:title, "Hits") %>
+
+<%= content_tag(:table, id: "hit_list", class: "table table-condensed") do %>
+	<%= content_tag(:thead) do %>
+		<%= content_tag(:tr) do %>
+			<%= content_tag(:th, "Hittable") %>
+			<%= content_tag(:th, "IP") %>
+			<%= content_tag(:th, "Impressions") %>
+		<% end %>
+	<% end %>
+	<%= content_tag(:tbody) do %>
+		<%= render @hits %>
+	<% end %>
+<% end %>
+
+<%= will_paginate %>

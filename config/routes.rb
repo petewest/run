@@ -19,6 +19,7 @@ Run::Application.routes.draw do
   resources :sessions, only: [:new, :create, :destroy]
   resources :attachments, only: [:new, :create, :destroy]
   resources :attachments, only: [:index], defaults: {format: 'json'}
+  resources :hits, only: :index
   
   
   root 'posts#index'
