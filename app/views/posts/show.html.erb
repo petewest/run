@@ -21,6 +21,6 @@
 	}(document, 'script', 'facebook-jssdk'));</script>
 	<% end %>
 	<div class="row">
-	<div class="col-md-11 col-md-offset-1 fb-comments" data-numposts="5" data-href="<%= url_for(only_path: false) %>" data-colorscheme="light" data-order-by="reverse_time"></div>
+	<div class="col-md-11 col-md-offset-1 fb-comments" data-numposts="5" data-href="<%= url_for(only_path: false, protocol: 'http') %>" data-colorscheme="light" data-order-by="reverse_time"></div>
 	</div>
 <% end %>
