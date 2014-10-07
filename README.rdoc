@@ -22,6 +22,14 @@ Embed maps & images in race reports
 Uses amazon s3: configure environment variables for +S3_BUCKET_NAME+, +AWS_ACCESS_KEY_ID+, +AWS_SECRET_ACCESS_KEY+ using your Amazon s3 details.
 See: https://devcenter.heroku.com/articles/paperclip-s3 for a guide to configuring Heroku if you're using that to host
 
+== Garmin API key
+
+Set +BASE_URL+ and +GARMIN_API_KEY+ environment variables to your details from https://my.garmin.com/api/communicator/key-generator.jsp
+
+== Google analytics
+
+If you use Google analytics set +GOOGLE_ANALYTICS_CODE+ to your UA code to automatically include the analytics js on each page
+
 == Google site verification
 
 If you're using the google webmaster tools (https://www.google.com/webmasters/tools/dashboard) and want to add your verification code to your website, set the environment variable +GOOGLE_VERIFICATION_CODE+ to be the string they give you, including the "google" but excluding the "html" (+google534723542364+ for example).
