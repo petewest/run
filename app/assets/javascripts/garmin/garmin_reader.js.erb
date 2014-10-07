@@ -552,6 +552,6 @@ var display;
 
 function find_garmin_devices() {
 	display = new GarminDeviceControlDemo("statusText", "readMap",
-	["http://run.petewest.org","a640806a0d1262ae4d2b43733773f3f0"]
+	["<%= Rails.application.secrets.base_url %>","<%= Rails.application.secrets.garmin_api_key %>"]
 	);
 }
