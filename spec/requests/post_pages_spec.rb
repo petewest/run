@@ -115,4 +115,19 @@ describe "Post pages" do
     end
   end
 
+  describe "with facebook comments" do
+    before do
+      @post = create(:post, facebook_comments: true)
+    end
+    describe "and bad facebook id" do
+      before do
+        @post.user.update_attribute(:facebook_id, %Q{" /><div id='bobby_tables'></div>"})
+        visit post_path(@post)
+      end
+
+      it { should_not have_selector('#bobby_tables') }
+      it { should have_selector('meta[property="fb:admins"]', visible: false) }
+    end
+  end
+
 end

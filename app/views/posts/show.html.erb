@@ -7,8 +7,8 @@
 <% if @post.facebook_comments %>
 
 	<% content_for :html_head do %>
-		<%= %Q{<meta property="fb:admins" content="#{@post.user.facebook_id}" />}.html_safe unless @post.user.facebook_id.blank? %>
-	<% end %>
+		<meta property="fb:admins" content="<%= @post.user.facebook_id %>" />
+	<% end if @post.user.facebook_id.present? %>
 
 	<% content_for :js_includes do %>
 	<div id="fb-root"></div>
