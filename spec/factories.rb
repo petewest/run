@@ -35,4 +35,9 @@ FactoryGirl.define do
     sequence(:ip_address) { |n| "127.0.0.#{n}" }
     association :hittable, factory: :post
   end
+  factory :attachment do
+    file_file_name 'image.jpg'
+    file_content_type 'image/jpeg'
+    file_file_size '50'
+  end
 end

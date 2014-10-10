@@ -113,6 +113,20 @@ describe "Post pages" do
 
       it { should_not have_hit_counter }
     end
+
+    describe "with images" do
+      before do
+        @image = create(:attachment)
+      end
+      describe "and bad caption" do
+        before do
+          @post.update_attribute(:write_up, %Q{img. #{@image.id} "><div id='bobby_tables'></div>})
+          visit post_path(@post)
+        end
+        it { should_not have_selector('#bobby_tables') }
+        it { should have_selector("img[src='#{@image.file.url(:large)}']") }
+      end
+    end
   end
 
   describe "with facebook comments" do
@@ -129,5 +143,6 @@ describe "Post pages" do
       it { should have_selector('meta[property="fb:admins"]', visible: false) }
     end
   end
+
 
 end
