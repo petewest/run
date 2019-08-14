@@ -1,9 +1,9 @@
 source 'https://rubygems.org'
-ruby '2.3.0'
+ruby '2.5.4'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.11.1'
 gem 'bootstrap-sass', '3.0.3.0'
 gem 'bcrypt-ruby', '3.1.2'
 gem "jquery-fileupload-rails"
@@ -29,7 +29,7 @@ gem 'will_paginate', '3.0.4'
 gem 'bootstrap-will_paginate', '0.0.10'
 gem 'RedCloth'
 gem 'polylines'
-gem 'paperclip'
+gem 'paperclip', '>= 5.2.0'
 gem 'aws-sdk'
 gem 'highcharts-rails', '3.0.9'
 
