@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :signed_in_user, only: [:edit, :update, :index, :change_password]
   before_action :correct_user_or_admin, only: [:edit, :update]
-  before_action :admin_user, only: [:destroy]
+  before_action :admin_user, only: [:create, :destroy]
   def new
     @user = User.new
   end
